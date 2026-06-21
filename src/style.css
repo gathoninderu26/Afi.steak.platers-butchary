@@ -1,0 +1,4 @@
+/* Global resets — Tailwind handles the rest via CDN in index.html */
+*, *::before, *::after {
+  box-sizing: border-box;
+}

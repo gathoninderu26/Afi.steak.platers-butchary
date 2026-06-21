@@ -1,0 +1,59 @@
+<!doctype html>
+<html class="dark" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      content="Experience the finest Kenyan steakhouse at AFI Steaks & Platters. Sizzling steaks, premium platters, and an authentic culinary journey in Kikuyu, Kiambu County."
+      name="description"
+    />
+    <title>AFI Steaks &amp; Platters - Premium Kenyan Steakhouse</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Tailwind CSS CDN with plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#D90404",
+              "background-light": "#F9FAFB",
+              "background-dark": "#000000",
+              "surface-light": "#000000",
+              "surface-dark": "#000000",
+            },
+            fontFamily: {
+              display: ["Oswald", "sans-serif"],
+              body: ["Lato", "sans-serif"],
+              script: ["Dancing Script", "cursive"],
+              serif: ["Playfair Display", "serif"],
+            },
+            backgroundImage: {
+              "charcoal-texture":
+                "url('https://www.transparenttextures.com/patterns/black-felt.png')",
+              "hero-pattern":
+                "linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Lato:wght@300;400;700&family=Dancing+Script:wght@400;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Material Icons & Symbols -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

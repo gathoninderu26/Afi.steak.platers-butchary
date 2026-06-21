@@ -1,0 +1,171 @@
+L545 depth:0->1 tag:<template>
+L546 depth:1->2 tag:<div class="bg-[#020202] text-white font-body min-
+L549 depth:2->3 tag:<header class="h-24 md:h-28 bg-black border-b bord
+L550 depth:3->4 tag:<div class="flex items-center gap-10">
+L552 depth:4->5 tag:<div class="flex flex-col items-center">
+L553 depth:5->6 tag:<div class="flex items-end leading-none">
+L554 depth:6->7 tag:<span class="font-display font-bold text-2xl lg:te
+L554 depth:7->6 tag:</span>
+L555 depth:6->7 tag:<div class="relative">
+L556 depth:7->8 tag:<span class="font-display font-bold text-2xl lg:te
+L556 depth:8->7 tag:</span>
+L557 depth:7->8 tag:<span class="absolute -top-1 left-0 w-full h-2 bg-
+L557 depth:8->7 tag:</span>
+L558 depth:7->6 tag:</div>
+L559 depth:6->5 tag:</div>
+L560 depth:5->4 tag:</div>
+L563 depth:4->5 tag:<nav class="hidden md:flex items-center gap-8 h-fu
+L567 depth:5->6 tag:<span class="material-icons opacity-70 text-xl">
+L567 depth:6->5 tag:</span>
+L568 depth:5->6 tag:<span class="font-display font-black text-[10px] u
+L568 depth:6->5 tag:</span>
+L569 depth:5->6 tag:<div v-if="activeTab === item.id" class="absolute 
+L569 depth:6->5 tag:</div>
+L570 depth:5->4 tag:</button>
+L571 depth:4->3 tag:</nav>
+L572 depth:3->2 tag:</div>
+L574 depth:2->3 tag:<div class="flex items-center gap-8">
+L576 depth:3->4 tag:<div class="hidden xl:flex items-center gap-4 px-6
+L577 depth:4->5 tag:<div class="relative">
+L580 depth:5->6 tag:<div class="absolute -bottom-1 -right-1 w-3 h-3 bg
+L580 depth:6->5 tag:</div>
+L581 depth:5->4 tag:</div>
+L582 depth:4->5 tag:<div class="flex flex-col">
+L583 depth:5->6 tag:<span class="text-[10px] font-display font-black t
+L583 depth:6->7 tag:<span class="text-primary">
+L583 depth:7->6 tag:</span>
+L583 depth:6->5 tag:</span>
+L584 depth:5->6 tag:<span class="text-[8px] font-black text-primary up
+L584 depth:6->5 tag:</span>
+L585 depth:5->4 tag:</div>
+L586 depth:4->3 tag:</div>
+L589 depth:3->4 tag:<div class="flex items-center gap-3">
+L591 depth:4->5 tag:<button class="relative w-10 h-10 flex items-cente
+L592 depth:5->6 tag:<span class="material-icons text-white/50 group-ho
+L592 depth:6->5 tag:</span>
+L593 depth:5->6 tag:<span class="absolute top-2 right-2 w-2 h-2 bg-pri
+L593 depth:6->5 tag:</span>
+L594 depth:5->4 tag:</button>
+L597 depth:4->5 tag:<button class="relative h-10 px-4 flex items-cente
+L598 depth:5->6 tag:<span class="material-icons text-white/50 group-ho
+L598 depth:6->5 tag:</span>
+L599 depth:5->6 tag:<span class="font-display font-black text-[10px] u
+L599 depth:6->5 tag:</span>
+L600 depth:5->4 tag:</button>
+L601 depth:4->3 tag:</div>
+L604 depth:3->4 tag:<div class="hidden md:flex items-center gap-4 bg-w
+L605 depth:4->5 tag:<span class="text-[8px] font-black uppercase text-
+L605 depth:5->4 tag:</span>
+L606 depth:4->5 tag:<select v-model="selectedLocation" class="bg-trans
+L607 depth:5->6 tag:<option v-for="l in locations" :key="l" :value="l"
+L607 depth:6->5 tag:</option>
+L608 depth:5->4 tag:</select>
+L609 depth:4->3 tag:</div>
+L612 depth:3->4 tag:<button @click="handleLogout" class="flex items-ce
+L613 depth:4->5 tag:<span class="text-[9px] font-black uppercase track
+L613 depth:5->4 tag:</span>
+L614 depth:4->5 tag:<span class="material-icons text-lg group-hover:ro
+L614 depth:5->4 tag:</span>
+L615 depth:4->3 tag:</button>
+L616 depth:3->2 tag:</div>
+L617 depth:2->1 tag:</header>
+L620 depth:1->2 tag:<main class="flex-1 overflow-y-auto custom-scrollb
+L623 depth:2->3 tag:<section class="w-full mb-10 overflow-hidden">
+L624 depth:3->4 tag:<div class="relative h-[200px] lg:h-[240px] bg-bla
+L626 depth:4->5 tag:<div class="absolute inset-0 z-0 opacity-40">
+L628 depth:5->6 tag:<div class="absolute inset-0 bg-gradient-to-t from
+L628 depth:6->5 tag:</div>
+L629 depth:5->4 tag:</div>
+L632 depth:4->5 tag:<div class="relative z-10 w-full lg:w-[400px] flex
+L633 depth:5->6 tag:<Transition name="slide-fade-up" mode="out-in">
+L634 depth:6->7 tag:<div :key="currentAdIndex" class="w-full">
+L635 depth:7->8 tag:<span class="text-primary font-display font-black 
+L635 depth:8->7 tag:</span>
+L636 depth:7->8 tag:<h2 class="font-display text-3xl lg:text-4xl font-
+L636 depth:8->7 tag:</h2>
+L637 depth:7->8 tag:<h2 class="font-display text-4xl lg:text-5xl font-
+L637 depth:8->7 tag:</h2>
+L638 depth:7->8 tag:<div class="flex items-center gap-6">
+L639 depth:8->9 tag:<span class="text-white text-3xl font-display font
+L639 depth:9->8 tag:</span>
+L640 depth:8->9 tag:<button class="bg-primary text-white px-6 py-3 fon
+L641 depth:9->10 tag:<span class="material-icons text-sm">
+L641 depth:10->9 tag:</span>
+L642 depth:9->8 tag:</button>
+L643 depth:8->7 tag:</div>
+L644 depth:7->6 tag:</div>
+L645 depth:6->5 tag:</Transition>
+L648 depth:5->6 tag:<div class="flex gap-2 mt-8">
+L651 depth:6->5 tag:</div>
+L652 depth:5->4 tag:</div>
+L653 depth:4->3 tag:</div>
+L656 depth:3->4 tag:<div class="hidden lg:flex relative z-10 flex-col 
+L657 depth:4->5 tag:<span class="font-script text-3xl text-primary ita
+L657 depth:5->4 tag:</span>
+L658 depth:4->5 tag:<div class="flex flex-col items-center leading-non
+L659 depth:5->6 tag:<h2 class="font-display text-4xl lg:text-5xl font-
+L659 depth:6->5 tag:</h2>
+L660 depth:5->6 tag:<h2 class="font-display text-6xl lg:text-7xl font-
+L660 depth:6->5 tag:</h2>
+L661 depth:5->4 tag:</div>
+L662 depth:4->5 tag:<div class="w-24 h-1 bg-primary mt-6">
+L662 depth:5->4 tag:</div>
+L663 depth:4->3 tag:</div>
+L666 depth:3->4 tag:<div class="relative z-10 w-full lg:w-[400px] flex
+L667 depth:4->5 tag:<Transition name="slide-fade-up" mode="out-in">
+L668 depth:5->6 tag:<div :key="currentReminderIndex" class="w-full">
+L669 depth:6->7 tag:<span class="text-primary font-display font-black 
+L669 depth:7->6 tag:</span>
+L670 depth:6->7 tag:<h2 class="font-display text-3xl lg:text-4xl font-
+L670 depth:7->6 tag:</h2>
+L671 depth:6->7 tag:<h2 class="font-display text-4xl lg:text-5xl font-
+L671 depth:7->6 tag:</h2>
+L672 depth:6->7 tag:<div class="flex items-center justify-end gap-6">
+L673 depth:7->8 tag:<button class="border border-primary text-primary 
+L674 depth:8->9 tag:<span class="material-icons text-sm">
+L674 depth:9->8 tag:</span>
+L675 depth:8->7 tag:</button>
+L676 depth:7->8 tag:<span class="text-white text-2xl font-display font
+L676 depth:8->7 tag:</span>
+L677 depth:7->6 tag:</div>
+L678 depth:6->5 tag:</div>
+L679 depth:5->4 tag:</Transition>
+L682 depth:4->5 tag:<div class="flex gap-2 mt-8">
+L685 depth:5->4 tag:</div>
+L686 depth:4->3 tag:</div>
+L687 depth:3->2 tag:</div>
+L688 depth:2->1 tag:</div>
+L691 depth:1->2 tag:<div v-if="activeTab === 'menu'" class="flex flex-
+L693 depth:2->3 tag:<div class="xl:w-64 border-b xl:border-b-0 xl:bord
+L694 depth:3->4 tag:<span class="material-icons text-primary animate-b
+L694 depth:4->3 tag:</span>
+L695 depth:3->4 tag:<div class="flex flex-col text-left">
+L696 depth:4->5 tag:<span class="text-[8px] font-black text-gray-500 u
+L696 depth:5->4 tag:</span>
+L699 depth:4->5 tag:<option value="dine" class="bg-black text-white">
+L699 depth:5->4 tag:</option>
+L700 depth:4->5 tag:<option value="butchery" class="bg-black text-whit
+L700 depth:5->4 tag:</option>
+L701 depth:4->3 tag:</select>
+L702 depth:3->2 tag:</div>
+L703 depth:2->1 tag:</div>
+L706 depth:1->2 tag:<div class="hidden lg:flex border-b xl:border-b-0 
+L707 depth:2->3 tag:<span class="material-icons text-primary text-sm a
+L707 depth:3->2 tag:</span>
+L708 depth:2->3 tag:<div class="flex flex-col text-left">
+L709 depth:3->4 tag:<span class="text-[9px] font-black text-gray-500 u
+L709 depth:4->3 tag:</span>
+L710 depth:3->4 tag:<span class="text-[11px] font-black text-white upp
+L710 depth:4->3 tag:</span>
+L711 depth:3->2 tag:</div>
+L712 depth:2->1 tag:</div>
+L716 depth:1->2 tag:<div class="flex-1 border-b xl:border-b-0 xl:borde
+L717 depth:2->3 tag:<span class="material-icons absolute left-8 top-1/
+L717 depth:3->2 tag:</span>
+L720 depth:2->1 tag:</div>
+L723 depth:1->2 tag:<div class="flex items-center gap-2 px-6 py-4 lg:p
+L728 depth:2->1 tag:</button>
+L729 depth:1->0 tag:</div>
+L730 depth:0->-1 tag:</div>
+L731 depth:-1->-2 tag:</section>
+L733 depth:-2->-1 tag:<div class="max-w-[1800px] mx-auto px-6 lg:px-12 p
