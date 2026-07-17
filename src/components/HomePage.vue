@@ -889,14 +889,14 @@ onUnmounted(() => {
             @touchend="pausedRow1 = false"
           >
             <div 
-              class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide px-6 sm:px-10"
+              class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide px-4 sm:px-10 carousel-track"
               id="highlights-row-1"
             >
               <div 
                 v-for="(item, index) in signatureHighlights.slice(0, 10)" 
                 :key="item.name"
                 data-card
-                class="snap-start flex-shrink-0 w-[calc(100vw-88px)] sm:w-[calc(50vw-56px)] lg:w-[calc(25vw-56px)] min-w-[240px] max-w-[340px] px-1 animate-reveal"
+                class="snap-start flex-shrink-0 w-[calc(100vw-32px)] sm:w-[calc(50vw-56px)] lg:w-[calc(25vw-56px)] min-w-[240px] max-w-[340px] px-1 animate-reveal"
                 :class="{ 'active': revealedHighlights }"
                 :style="{ animationDelay: `${index * 100}ms` }"
               >
@@ -966,14 +966,14 @@ onUnmounted(() => {
             @touchend="pausedRow2 = false"
           >
             <div 
-              class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide px-6 sm:px-10"
+              class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide px-4 sm:px-10 carousel-track"
               id="highlights-row-2"
             >
               <div 
                 v-for="(item, index) in signatureHighlights.slice(10, 20)" 
                 :key="item.name"
                 data-card
-                class="snap-start flex-shrink-0 w-[calc(100vw-88px)] sm:w-[calc(50vw-56px)] lg:w-[calc(25vw-56px)] min-w-[240px] max-w-[340px] px-1 animate-reveal"
+                class="snap-start flex-shrink-0 w-[calc(100vw-32px)] sm:w-[calc(50vw-56px)] lg:w-[calc(25vw-56px)] min-w-[240px] max-w-[340px] px-1 animate-reveal"
                 :class="{ 'active': revealedHighlights }"
                 :style="{ animationDelay: `${(index + 2) * 100}ms` }"
               >
@@ -1708,5 +1708,10 @@ onUnmounted(() => {
 }
 .animate-toast-progress {
   animation: toastProgress 3s linear forwards;
+}
+
+.carousel-track {
+  -webkit-overflow-scrolling: touch;
+  will-change: scroll-position;
 }
 </style>

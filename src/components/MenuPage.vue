@@ -1030,11 +1030,11 @@ onUnmounted(() => {
                         @mouseleave="pausedCategories[`carousel-${sanitizeId(category)}-${rowIndex}`] = false"
                         @touchstart="pausedCategories[`carousel-${sanitizeId(category)}-${rowIndex}`] = true"
                         @touchend="pausedCategories[`carousel-${sanitizeId(category)}-${rowIndex}`] = false"
-                        class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar px-10 sm:px-14 carousel-track"
+                        class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar px-4 sm:px-14 carousel-track"
                     >
                         <div v-for="item in rowItems" :key="item.name"
                              data-card
-                             class="snap-start flex-shrink-0 w-[calc(100vw-88px)] sm:w-[calc(50vw-56px)] lg:w-[calc(25vw-56px)] min-w-[240px] max-w-[340px] bg-black/95 backdrop-blur-3xl border border-white/10 rounded-none overflow-hidden group/card hover:border-primary/60 transition-all duration-500 shadow-[0_30px_70px_rgba(0,0,0,0.9)] flex flex-col h-[400px]">
+                             class="snap-start flex-shrink-0 w-[calc(100vw-32px)] sm:w-[calc(50vw-56px)] lg:w-[calc(25vw-56px)] min-w-[240px] max-w-[340px] bg-black/95 backdrop-blur-3xl border border-white/10 rounded-none overflow-hidden group/card hover:border-primary/60 transition-all duration-500 shadow-[0_30px_70px_rgba(0,0,0,0.9)] flex flex-col h-[400px]">
                             
                             <div class="relative h-44 overflow-hidden cursor-pointer" @click="showItemDetail = item">
                                 <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-110">
@@ -1380,5 +1380,10 @@ select {
 
 .animate-scanner-horizontal {
   animation: scanner-horizontal 2.5s linear infinite;
+}
+
+.carousel-track {
+  -webkit-overflow-scrolling: touch;
+  will-change: scroll-position;
 }
 </style>
