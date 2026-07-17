@@ -706,39 +706,45 @@ const scrollCarousel = (id, direction) => {
 }
 
 // ─── Unified Animation System ────────────────────────────────────────────────
+let rafId = null
 const animateSystem = () => {
-    // 1. Protocol Ticker
     const protocol = document.getElementById('protocol-ticker')
     if (protocol) {
         protocol.scrollLeft += 0.8
         if (protocol.scrollLeft >= protocol.scrollWidth / 2) protocol.scrollLeft = 0
     }
+    rafId = requestAnimationFrame(animateSystem)
+}
 
-    // 2. Dynamic Menu Rows
-    Object.keys(itemsByCategory.value).forEach(category => {
-        const rows = splitItemsForRows(itemsByCategory.value[category])
-        rows.forEach((_, rowIndex) => {
-            const id = `carousel-${sanitizeId(category)}-${rowIndex}`
-            // Only scroll if not hovered
-            if (!pausedCategories[id]) {
+let carouselAutoInterval = null
+const startCarouselAutoPlay = () => {
+    carouselAutoInterval = setInterval(() => {
+        Object.keys(itemsByCategory.value).forEach(category => {
+            const rows = splitItemsForRows(itemsByCategory.value[category])
+            rows.forEach((_, rowIndex) => {
+                const id = `carousel-${sanitizeId(category)}-${rowIndex}`
+                if (pausedCategories[id]) return
                 const el = document.getElementById(id)
-                if (el) {
-                    // Subtle tactical drift
-                    const driftSpeed = rowIndex % 2 === 0 ? 0.4 : -0.4
-                    el.scrollLeft += driftSpeed
-                    
-                    const maxScroll = el.scrollWidth - el.clientWidth
-                    if (driftSpeed > 0 && el.scrollLeft >= maxScroll - 1) {
-                        el.scrollLeft = 0
-                    } else if (driftSpeed < 0 && el.scrollLeft <= 1) {
-                        el.scrollLeft = maxScroll
+                if (!el) return
+                const firstCard = el.querySelector('[data-card]')
+                const cardW = firstCard ? firstCard.offsetWidth + 24 : el.clientWidth
+                const maxScroll = el.scrollWidth - el.clientWidth
+                if (rowIndex % 2 === 0) {
+                    if (el.scrollLeft >= maxScroll - 4) {
+                        el.scrollTo({ left: 0, behavior: 'smooth' })
+                    } else {
+                        el.scrollBy({ left: cardW, behavior: 'smooth' })
+                    }
+                } else {
+                    if (el.scrollLeft <= 4) {
+                        el.scrollTo({ left: maxScroll, behavior: 'smooth' })
+                    } else {
+                        el.scrollBy({ left: -cardW, behavior: 'smooth' })
                     }
                 }
-            }
+            })
         })
-    })
-
-    requestAnimationFrame(animateSystem)
+    }, 3500)
 }
 
 // ─── Scroll Reveal Logic ───────────────────────────────────────────────────
@@ -783,8 +789,9 @@ onMounted(() => {
         activeRightAd.value = (activeRightAd.value + 1) % rightAds.length
     }, 5500)
 
-    // 2. Start Unified Animation Engine
+    // 2. Start ticker rAF + carousel auto-play
     animateSystem()
+    startCarouselAutoPlay()
 
     window.addEventListener('scroll', handleScroll)
 })
@@ -792,6 +799,8 @@ onMounted(() => {
 onUnmounted(() => {
     if (leftInterval) clearInterval(leftInterval)
     if (rightInterval) clearInterval(rightInterval)
+    if (carouselAutoInterval) clearInterval(carouselAutoInterval)
+    if (rafId) cancelAnimationFrame(rafId)
     window.removeEventListener('scroll', handleScroll)
 })
 </script>
@@ -1021,7 +1030,7 @@ onUnmounted(() => {
                         @mouseleave="pausedCategories[`carousel-${sanitizeId(category)}-${rowIndex}`] = false"
                         @touchstart="pausedCategories[`carousel-${sanitizeId(category)}-${rowIndex}`] = true"
                         @touchend="pausedCategories[`carousel-${sanitizeId(category)}-${rowIndex}`] = false"
-                        class="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 no-scrollbar px-10 sm:px-14"
+                        class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar px-10 sm:px-14 carousel-track"
                     >
                         <div v-for="item in rowItems" :key="item.name"
                              data-card
