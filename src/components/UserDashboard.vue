@@ -801,7 +801,7 @@ onUnmounted(() => {
                 </div>
 
                 <!-- RIGHT: TACTICAL REMINDERS CAROUSEL -->
-                <div class="relative z-10 w-full lg:w-[400px] flex flex-col items-end text-right bg-black/60 backdrop-blur-xl p-8 border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] transition-all duration-700">
+                <div class="hidden lg:flex relative z-10 w-full lg:w-[400px] flex-col items-end text-right bg-black/60 backdrop-blur-xl p-8 border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] transition-all duration-700">
                     <Transition name="slide-fade-up" mode="out-in">
                         <div :key="currentReminderIndex" class="w-full">
                             <span class="text-primary font-display font-black text-[9px] uppercase tracking-[0.4em] mb-4 block">Sector Intelligence</span>
