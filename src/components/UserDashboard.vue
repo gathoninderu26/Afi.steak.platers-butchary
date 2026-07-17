@@ -10,6 +10,7 @@ const activeTab = ref('overview')
 const searchQuery = ref('')
 const selectedLocation = ref('Kikuyu HQ')
 const locations = ['Kikuyu HQ', 'Westlands Base', 'Muthiga Sector', 'CBD Hub']
+const mobileMenuOpen = ref(false)
 
 const currentDay = computed(() => {
     return new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(new Date())
@@ -571,7 +572,11 @@ onMounted(() => {
             </nav>
         </div>
 
-        <div class="flex items-center gap-8">
+        <div class="flex items-center gap-2 sm:gap-3">
+            <!-- Hamburger (mobile only) -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden flex items-center justify-center w-10 h-10 bg-white/5 border border-white/10 hover:border-primary/50 transition-all">
+              <span class="material-icons text-white text-xl">{{ mobileMenuOpen ? 'close' : 'menu' }}</span>
+            </button>
             <!-- User Tactical Profile -->
             <div class="hidden xl:flex items-center gap-4 px-6 border-l border-white/10">
                 <div class="relative">
@@ -615,6 +620,58 @@ onMounted(() => {
             </button>
         </div>
     </header>
+
+    <!-- Mobile Nav Drawer -->
+    <Transition name="drawer">
+      <div v-if="mobileMenuOpen" class="fixed inset-0 z-[200] md:hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" @click="mobileMenuOpen = false"></div>
+        <!-- Drawer Panel -->
+        <nav class="absolute top-0 left-0 h-full w-72 bg-[#080808] border-r border-white/10 flex flex-col pt-24 pb-10 px-6 gap-2">
+          <!-- Brand at top -->
+          <div class="absolute top-6 left-6 flex items-end leading-none">
+            <span class="font-display font-bold text-2xl text-white">AF</span>
+            <div class="relative">
+              <span class="font-display font-bold text-2xl text-white">I</span>
+              <span class="absolute -top-0.5 left-0 w-full h-1.5 bg-primary shadow-[0_0_8px_rgba(217,4,4,1)]"></span>
+            </div>
+          </div>
+          <!-- Close button -->
+          <button @click="mobileMenuOpen = false" class="absolute top-6 right-6 w-9 h-9 flex items-center justify-center border border-white/10 bg-white/5 hover:bg-primary/20 transition-all">
+            <span class="material-icons text-white text-xl">close</span>
+          </button>
+
+          <!-- Nav links -->
+          <button
+            v-for="item in navItems"
+            :key="item.id"
+            @click="activeTab = item.id; mobileMenuOpen = false"
+            class="flex items-center gap-4 px-4 py-3 border transition-all"
+            :class="activeTab === item.id
+              ? 'border-primary/40 bg-primary/10 text-primary'
+              : 'border-transparent text-gray-400 hover:text-white hover:border-white/10 hover:bg-white/5'"
+          >
+            <span class="material-icons text-xl">{{ item.icon }}</span>
+            <span class="font-display font-black text-xs uppercase tracking-[0.2em]">{{ item.label }}</span>
+            <div v-if="activeTab === item.id" class="ml-auto w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+          </button>
+
+          <!-- Location selector -->
+          <div class="mt-auto border-t border-white/10 pt-6">
+            <span class="text-[8px] font-black uppercase text-gray-500 tracking-widest block mb-2">Active Sector</span>
+            <select v-model="selectedLocation" class="w-full bg-transparent text-primary font-display text-xs font-bold uppercase focus:outline-none appearance-none cursor-pointer border border-white/10 px-3 py-2">
+              <option v-for="l in locations" :key="l" :value="l">{{ l }}</option>
+            </select>
+          </div>
+
+          <!-- Logout -->
+          <button @click="handleLogout" class="flex items-center gap-3 px-4 py-3 bg-white/5 border border-white/10 hover:bg-primary transition-all duration-300 mt-2">
+            <span class="material-icons text-lg">logout</span>
+            <span class="text-[9px] font-black uppercase tracking-widest">Abort Ritual</span>
+          </button>
+        </nav>
+      </div>
+    </Transition>
 
     <!-- CENTRAL SCROLLABLE COMMAND HUB -->
     <main class="flex-1 overflow-y-auto custom-scrollbar bg-[#050505] relative pt-0">
@@ -1928,5 +1985,19 @@ select {
 
 .animate-scanner-horizontal {
   animation: scanner-horizontal 2.5s linear infinite;
+}
+
+/* Mobile Drawer Transition */
+.drawer-enter-active, .drawer-leave-active {
+  transition: opacity 0.3s ease;
+}
+.drawer-enter-active nav, .drawer-leave-active nav {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.drawer-enter-from, .drawer-leave-to {
+  opacity: 0;
+}
+.drawer-enter-from nav, .drawer-leave-to nav {
+  transform: translateX(-100%);
 }
 </style>
