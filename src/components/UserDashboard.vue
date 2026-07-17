@@ -504,8 +504,10 @@ const animate = () => {
 const manualScroll = (id, direction) => {
     const el = document.getElementById(id)
     if (!el) return
-    const amount = direction === 'left' ? -400 : 400
-    el.scrollBy({ left: amount, behavior: 'smooth' })
+    const card = el.querySelector('[data-card]')
+    const amount = card ? card.clientWidth + 16 : 350
+    const scrollAmount = direction === 'left' ? -amount : amount
+    el.scrollBy({ left: scrollAmount, behavior: 'smooth' })
 }
 
 // ─── Modal State ────────────────────────────────────────────────────────────
@@ -1159,16 +1161,17 @@ onUnmounted(() => {
                         <!-- CAROUSEL ROW 1 (TOP) -->
                         <div class="relative group/carousel">
                              <!-- ARROWS -->
-                             <button @click="manualScroll(`carousel-${cat}-top`, 'left')" class="absolute top-1/2 -left-4 -translate-y-1/2 z-20 w-12 h-12 bg-black border border-white/10 flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-primary">
+                             <button @click="manualScroll(`carousel-${cat}-top`, 'left')" class="absolute top-1/2 -left-2 sm:-left-4 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-black/90 border border-white/10 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover/carousel:opacity-100 transition-all hover:bg-primary">
                                  <span class="material-icons">chevron_left</span>
                              </button>
-                             <button @click="manualScroll(`carousel-${cat}-top`, 'right')" class="absolute top-1/2 -right-4 -translate-y-1/2 z-20 w-12 h-12 bg-black border border-white/10 flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-primary">
+                             <button @click="manualScroll(`carousel-${cat}-top`, 'right')" class="absolute top-1/2 -right-2 sm:-right-4 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-black/90 border border-white/10 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover/carousel:opacity-100 transition-all hover:bg-primary">
                                  <span class="material-icons">chevron_right</span>
                              </button>
 
-                             <div :id="`carousel-${cat}-top`" class="flex overflow-x-auto no-scrollbar scroll-smooth gap-8 pb-4">
+                             <div :id="`carousel-${cat}-top`" class="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-4 sm:gap-8 pb-4 px-4 sm:px-0 carousel-track">
                                 <div v-for="(item, idx) in [...(menuMode === 'dine' ? allItems : butcheryItems).filter(i => i.category === cat).slice(0, 8), ...(menuMode === 'dine' ? allItems : butcheryItems).filter(i => i.category === cat).slice(0, 8)]" :key="`${item.name}-${idx}`" 
-                                     class="flex-none w-[350px] bg-black/95 backdrop-blur-3xl border border-white/10 rounded-none overflow-hidden group/card hover:border-primary/60 transition-all duration-500 shadow-[0_30px_70px_rgba(0,0,0,0.9)] h-full">
+                                     data-card
+                                     class="snap-start flex-none w-[calc(100vw-32px)] sm:w-[350px] bg-black/95 backdrop-blur-3xl border border-white/10 rounded-none overflow-hidden group/card hover:border-primary/60 transition-all duration-500 shadow-[0_30px_70px_rgba(0,0,0,0.9)] h-full">
                                     <div class="relative h-64 overflow-hidden cursor-pointer" @click="openHighlightModal(item)">
                                         <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-110 grayscale group-hover/card:grayscale-0">
                                         <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
@@ -1204,17 +1207,18 @@ onUnmounted(() => {
                         <!-- CAROUSEL ROW 2 (BOTTOM) -->
                         <div class="relative group/carousel">
                              <!-- ARROWS -->
-                             <button @click="manualScroll(`carousel-${cat}-bottom`, 'left')" class="absolute top-1/2 -left-4 -translate-y-1/2 z-20 w-12 h-12 bg-black border border-white/10 flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-primary">
+                             <button @click="manualScroll(`carousel-${cat}-bottom`, 'left')" class="absolute top-1/2 -left-2 sm:-left-4 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-black/90 border border-white/10 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover/carousel:opacity-100 transition-all hover:bg-primary">
                                  <span class="material-icons">chevron_left</span>
                              </button>
-                             <button @click="manualScroll(`carousel-${cat}-bottom`, 'right')" class="absolute top-1/2 -right-4 -translate-y-1/2 z-20 w-12 h-12 bg-black border border-white/10 flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-primary">
+                             <button @click="manualScroll(`carousel-${cat}-bottom`, 'right')" class="absolute top-1/2 -right-2 sm:-right-4 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-black/90 border border-white/10 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover/carousel:opacity-100 transition-all hover:bg-primary">
                                  <span class="material-icons">chevron_right</span>
                              </button>
 
-                             <div :id="`carousel-${cat}-bottom`" class="flex overflow-x-auto no-scrollbar scroll-smooth gap-8 pb-4">
+                             <div :id="`carousel-${cat}-bottom`" class="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-4 sm:gap-8 pb-4 px-4 sm:px-0 carousel-track">
                                  <div v-for="(item, idx) in [...(menuMode === 'dine' ? allItems : butcheryItems).filter(i => i.category === cat).slice(8, 16), ...(menuMode === 'dine' ? allItems : butcheryItems).filter(i => i.category === cat).slice(8, 16)]" :key="`${item.name}-bottom-${idx}`" 
  
-                                     class="flex-none w-[350px] bg-black/95 backdrop-blur-3xl border border-white/10 rounded-none overflow-hidden group/card hover:border-primary/60 transition-all duration-500 shadow-[0_30px_70px_rgba(0,0,0,0.9)] h-full">
+                                     data-card
+                                       class="snap-start flex-none w-[calc(100vw-32px)] sm:w-[350px] bg-black/95 backdrop-blur-3xl border border-white/10 rounded-none overflow-hidden group/card hover:border-primary/60 transition-all duration-500 shadow-[0_30px_70px_rgba(0,0,0,0.9)] h-full">
                                     <div class="relative h-64 overflow-hidden cursor-pointer" @click="openHighlightModal(item)">
                                         <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-110 grayscale group-hover/card:grayscale-0">
                                         <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
