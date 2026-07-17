@@ -939,7 +939,7 @@ onUnmounted(() => {
                 <div v-for="step in [...deploymentSteps, ...deploymentSteps]" :key="step.title + Math.random()" 
                      class="group relative flex items-center gap-6 px-10 py-4 min-w-[320px] h-16 bg-black/60 border border-white/5 overflow-hidden transition-all hover:border-primary/40">
                      
-                     <img :src="step.img" class="absolute inset-0 w-full h-full object-cover grayscale opacity-10 group-hover:opacity-30 group-hover:scale-110 transition-all duration-1000">
+                     <img :src="step.img" :alt="step.title" loading="lazy" class="absolute inset-0 w-full h-full object-cover grayscale opacity-10 group-hover:opacity-30 group-hover:scale-110 transition-all duration-1000">
                      <div class="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent"></div>
                      
                      <!-- Scanner Effect -->
@@ -1068,7 +1068,7 @@ onUnmounted(() => {
             
             <div class="flex flex-col md:flex-row h-full">
                 <div class="md:w-1/2 h-80 md:h-[600px] overflow-hidden text-left">
-                    <img :src="showItemDetail.image" class="w-full h-full object-cover">
+                    <img :src="showItemDetail.image" :alt="showItemDetail.name" class="w-full h-full object-cover">
                 </div>
                 <div class="md:w-1/2 p-12 md:p-20 flex flex-col text-left">
                     <span class="text-primary font-display font-black text-xs uppercase tracking-[0.4em] mb-4">{{ showItemDetail.category }}</span>

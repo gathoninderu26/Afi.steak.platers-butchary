@@ -6,6 +6,9 @@ import { cart } from '../cartState'
 const router = useRouter()
 const isScrolled = ref(false)
 const showLoginDialog = ref(false)
+const mobileMenuOpen = ref(false)
+
+const closeMobileMenu = () => { mobileMenuOpen.value = false }
 
 const handleLogin = () => {
     showLoginDialog.value = false
@@ -54,24 +57,24 @@ onUnmounted(() => {
           <div class="flex items-center min-w-max lg:gap-8">
             <router-link 
               to="/" 
-              class="nav-link snap-center"
+              class="nav-link snap-center hidden lg:block"
               exact-active-class="active-link"
             >Home</router-link>
             <router-link 
               to="/menu" 
-              class="nav-link snap-center"
+              class="nav-link snap-center hidden lg:block"
               active-class="active-link"
             >Menu</router-link>
 
             <router-link 
               to="/gallery" 
-              class="nav-link snap-center"
+              class="nav-link snap-center hidden lg:block"
               active-class="active-link"
             >Chronicle</router-link>
 
             <router-link 
               to="/contact" 
-              class="nav-link snap-center"
+              class="nav-link snap-center hidden lg:block"
               active-class="active-link"
             >Support</router-link>
 
@@ -79,22 +82,43 @@ onUnmounted(() => {
             <div class="flex items-center gap-4 md:gap-6 pl-6 lg:pl-0">
               <button 
                 @click="showLoginDialog = true"
-                class="cta-button snap-center"
+                class="cta-button snap-center hidden lg:inline-flex"
               >
                 Book a Table
               </button>
 
               <!-- Cart Icon -->
-              <router-link to="/cart" class="relative group/nav-icon p-2">
-                <span class="material-icons text-2xl md:text-3xl text-white group-hover/nav-icon:text-primary transition-colors">shopping_bag</span>
+              <router-link to="/cart" class="relative group/nav-icon p-2" aria-label="View your cart">
+                <span class="material-icons text-2xl md:text-3xl text-white group-hover/nav-icon:text-primary transition-colors" aria-hidden="true">shopping_bag</span>
                 <span v-if="cart.length > 0" class="absolute top-0 right-0 bg-primary text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full animate-bounce shadow-[0_0_10px_rgba(217,4,4,0.5)]">
                   {{ cart.length }}
                 </span>
               </router-link>
 
               <!-- Profile Icon -->
-              <button @click="showLoginDialog = true" class="group/nav-icon p-2">
-                <span class="material-icons text-2xl md:text-3xl text-white group-hover/nav-icon:text-primary transition-colors">account_circle</span>
+              <button @click="showLoginDialog = true" class="group/nav-icon p-2" aria-label="Sign in or manage account">
+                <span class="material-icons text-2xl md:text-3xl text-white group-hover/nav-icon:text-primary transition-colors" aria-hidden="true">account_circle</span>
+              </button>
+
+              <!-- Hamburger (mobile only) -->
+              <button
+                @click="mobileMenuOpen = !mobileMenuOpen"
+                class="lg:hidden p-2 flex flex-col justify-center items-center gap-[5px] group/hb"
+                :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'"
+                aria-expanded="mobileMenuOpen"
+              >
+                <span
+                  class="block w-6 h-[2px] bg-white transition-all duration-300"
+                  :class="mobileMenuOpen ? 'rotate-45 translate-y-[7px]' : ''"
+                ></span>
+                <span
+                  class="block w-6 h-[2px] bg-white transition-all duration-300"
+                  :class="mobileMenuOpen ? 'opacity-0 scale-x-0' : ''"
+                ></span>
+                <span
+                  class="block w-6 h-[2px] bg-white transition-all duration-300"
+                  :class="mobileMenuOpen ? '-rotate-45 -translate-y-[7px]' : ''"
+                ></span>
               </button>
             </div>
           </div>
@@ -117,8 +141,8 @@ onUnmounted(() => {
           </div>
 
           <!-- Close Button -->
-          <button @click="showLoginDialog = false" class="absolute top-6 right-6 text-white/40 hover:text-primary transition-colors z-20">
-            <span class="material-icons text-2xl">close</span>
+          <button @click="showLoginDialog = false" class="absolute top-6 right-6 text-white/40 hover:text-primary transition-colors z-20" aria-label="Close dialog">
+            <span class="material-icons text-2xl" aria-hidden="true">close</span>
           </button>
 
           <!-- Content (Lifted above sheen) -->
@@ -168,6 +192,131 @@ onUnmounted(() => {
       </div>
     </Teleport>
   </nav>
+
+  <!-- Mobile Menu Drawer (lg and above: hidden) -->
+  <Teleport to="body">
+    <Transition name="mobile-menu">
+      <div
+        v-if="mobileMenuOpen"
+        class="lg:hidden fixed inset-0 z-[90] flex"
+      >
+        <!-- Backdrop -->
+        <div
+          class="absolute inset-0 bg-black/80 backdrop-blur-md"
+          @click="closeMobileMenu"
+        ></div>
+
+        <!-- Drawer panel -->
+        <div class="relative ml-auto w-[80vw] max-w-sm h-full bg-black border-l border-white/10 flex flex-col shadow-[0_0_80px_rgba(217,4,4,0.2)] overflow-y-auto">
+
+          <!-- Drawer header -->
+          <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
+            <div class="flex items-end leading-none">
+              <span class="font-display font-bold text-2xl tracking-tighter text-white">AF</span>
+              <div class="relative">
+                <span class="font-display font-bold text-2xl tracking-tighter text-white">I</span>
+                <span class="absolute -top-1 left-0 w-full h-2 bg-primary rounded-sm shadow-[0_0_8px_rgba(217,4,4,0.9)]"></span>
+              </div>
+            </div>
+            <button
+              @click="closeMobileMenu"
+              class="text-white/50 hover:text-primary transition-colors p-1"
+              aria-label="Close navigation menu"
+            >
+              <span class="material-icons text-2xl" aria-hidden="true">close</span>
+            </button>
+          </div>
+
+          <!-- Decorative red accent bar -->
+          <div class="h-[2px] w-full bg-gradient-to-r from-primary via-primary/60 to-transparent"></div>
+
+          <!-- Nav links -->
+          <nav class="flex flex-col gap-1 px-4 py-8">
+            <router-link
+              to="/"
+              exact-active-class="mobile-active-link"
+              class="mobile-nav-link"
+              @click="closeMobileMenu"
+            >
+              <span class="material-icons text-primary text-xl" aria-hidden="true">home</span>
+              <span>Home</span>
+            </router-link>
+
+            <router-link
+              to="/menu"
+              active-class="mobile-active-link"
+              class="mobile-nav-link"
+              @click="closeMobileMenu"
+            >
+              <span class="material-icons text-primary text-xl" aria-hidden="true">menu_book</span>
+              <span>The Menu</span>
+            </router-link>
+
+            <router-link
+              to="/gallery"
+              active-class="mobile-active-link"
+              class="mobile-nav-link"
+              @click="closeMobileMenu"
+            >
+              <span class="material-icons text-primary text-xl" aria-hidden="true">photo_library</span>
+              <span>Chronicle</span>
+            </router-link>
+
+            <router-link
+              to="/contact"
+              active-class="mobile-active-link"
+              class="mobile-nav-link"
+              @click="closeMobileMenu"
+            >
+              <span class="material-icons text-primary text-xl" aria-hidden="true">support_agent</span>
+              <span>Support</span>
+            </router-link>
+
+            <router-link
+              to="/cart"
+              active-class="mobile-active-link"
+              class="mobile-nav-link"
+              @click="closeMobileMenu"
+            >
+              <span class="material-icons text-primary text-xl" aria-hidden="true">shopping_bag</span>
+              <span>Your Order</span>
+              <span v-if="cart.length > 0" class="ml-auto bg-primary text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full">
+                {{ cart.length }}
+              </span>
+            </router-link>
+          </nav>
+
+          <!-- Divider -->
+          <div class="mx-6 h-[1px] bg-white/5"></div>
+
+          <!-- CTA block -->
+          <div class="px-6 py-8 flex flex-col gap-4">
+            <button
+              @click="showLoginDialog = true; closeMobileMenu()"
+              class="w-full bg-primary text-white py-2.5 font-display font-black uppercase tracking-[0.15em] text-xs hover:bg-red-700 transition-all shadow-[0_8px_20px_rgba(217,4,4,0.25)] active:scale-95"
+            >
+              Book a Table
+            </button>
+            <button
+              @click="showLoginDialog = true; closeMobileMenu()"
+              class="w-full border border-white/20 text-white py-4 font-display font-black uppercase tracking-[0.2em] text-sm hover:border-primary hover:text-primary transition-all active:scale-95"
+            >
+              Member Login
+            </button>
+          </div>
+
+          <!-- Footer info -->
+          <div class="mt-auto px-6 pb-8">
+            <div class="h-[1px] bg-white/5 mb-6"></div>
+            <p class="text-[10px] text-gray-600 font-display uppercase tracking-[0.3em] mb-1">Location</p>
+            <p class="text-xs text-gray-400 font-light">Southern Bypass Road, Kikuyu</p>
+            <p class="text-[10px] text-gray-600 font-display uppercase tracking-[0.3em] mt-3 mb-1">Hours</p>
+            <p class="text-xs text-gray-400 font-light">Mon–Thu 5–10 PM &nbsp;·&nbsp; Fri–Sat 5–11 PM</p>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <style scoped>
@@ -265,5 +414,54 @@ onUnmounted(() => {
 
 .animate-glossy {
   animation: glossy 6s linear infinite;
+}
+
+/* ── Mobile drawer nav links ─────────────────────────────────────────────── */
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.75);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+  border-radius: 2px;
+}
+
+.mobile-nav-link:hover {
+  color: #ffffff;
+  background: rgba(217, 4, 4, 0.06);
+  border-bottom-color: rgba(217, 4, 4, 0.2);
+}
+
+.mobile-active-link {
+  color: #D90404 !important;
+  background: rgba(217, 4, 4, 0.08) !important;
+  border-bottom-color: rgba(217, 4, 4, 0.3) !important;
+}
+
+/* ── Mobile drawer slide-in transition ───────────────────────────────────── */
+.mobile-menu-enter-active,
+.mobile-menu-leave-active {
+  transition: opacity 0.3s ease;
+}
+.mobile-menu-enter-active .relative.ml-auto,
+.mobile-menu-leave-active .relative.ml-auto {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.mobile-menu-enter-from,
+.mobile-menu-leave-to {
+  opacity: 0;
+}
+.mobile-menu-enter-from .relative.ml-auto {
+  transform: translateX(100%);
+}
+.mobile-menu-leave-to .relative.ml-auto {
+  transform: translateX(100%);
 }
 </style>

@@ -153,7 +153,6 @@ const blogPosts = ref([
 // ─── Reactive State ───────────────────────────────────────────────────────────
 const activeFilter = ref('all')
 const scrollProgress = ref(0)
-const showScrollTop = ref(false)
 const modalOpen = ref(false)
 const selectedItem = ref(null)
 const embers = ref([])
@@ -362,7 +361,6 @@ function handleScroll() {
   const winScroll = window.scrollY
   const height = document.documentElement.scrollHeight - document.documentElement.clientHeight
   scrollProgress.value = (winScroll / height) * 100
-  showScrollTop.value = winScroll > 300
 
   // Apply Parallax to gallery items
   document.querySelectorAll('.gallery-item').forEach((el, index) => {
@@ -373,10 +371,6 @@ function handleScroll() {
       el.style.setProperty('--parallax-offset', `${offset}px`)
     }
   })
-}
-
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 // ─── Lifecycle ────────────────────────────────────────────────────────────────
@@ -423,13 +417,7 @@ onUnmounted(() => {
     <!-- Overlay Tools -->
     <div class="scroll-progress" :style="{ width: scrollProgress + '%' }"></div>
     
-    <button 
-      id="scroll-top"
-      :class="['fixed bottom-8 right-8 z-[100] bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(217,4,4,0.4)] transition-all duration-500 hover:scale-110 group', showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0']"
-      @click="scrollToTop"
-    >
-      <span class="material-icons group-hover:-translate-y-1 transition-transform">north</span>
-    </button>
+
 
     <div class="embers-container">
       <div v-for="e in embers" :key="e.id" class="ember" :style="{ width: e.size + 'px', height: e.size + 'px', left: e.left + '%', '--duration': e.duration + 's' }"></div>
@@ -474,7 +462,7 @@ onUnmounted(() => {
             </button>
             <div class="flex flex-col">
               <div class="h-[450px] overflow-hidden relative">
-                <img :src="selectedPost.image" class="w-full h-full object-cover brightness-75">
+                <img :src="selectedPost.image" :alt="selectedPost.title" class="w-full h-full object-cover brightness-75">
                 <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div>
               </div>
               <div class="px-8 md:px-20 py-16">
@@ -511,7 +499,7 @@ onUnmounted(() => {
     <header class="relative pt-40 pb-32 min-h-[70vh] flex flex-col justify-center overflow-hidden">
       <!-- Cinematic Background Image -->
       <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1920&q=80" class="w-full h-full object-cover brightness-[0.15] contrast-[1.2] grayscale opacity-60">
+        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1920&q=80" alt="" aria-hidden="true" class="w-full h-full object-cover brightness-[0.15] contrast-[1.2] grayscale opacity-60">
         <div class="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black"></div>
         <!-- Subtle Atmospheric Glow -->
         <div class="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-black/80"></div>
@@ -558,7 +546,7 @@ onUnmounted(() => {
             >
               <div class="absolute inset-0 bg-gradient-to-t from-primary/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-1000"></div>
               <div v-if="item.type === 'video'" class="video-indicator z-20"><span class="material-icons text-3xl">play_arrow</span></div>
-              <img :src="item.image" class="w-full h-full object-cover transition-transform duration-1500 group-hover:scale-115 brightness-[0.8] group-hover:brightness-105">
+              <img :src="item.image" :alt="item.title" loading="lazy" class="w-full h-full object-cover transition-transform duration-1500 group-hover:scale-115 brightness-[0.8] group-hover:brightness-105">
               <div class="gallery-overlay">
                 <div class="flex items-center gap-4 mb-4">
                   <span class="w-12 h-[1px] bg-primary group-hover:w-24 transition-all duration-800"></span>
@@ -604,7 +592,7 @@ onUnmounted(() => {
             </div>
             <div class="reveal-up relative group" style="transition-delay: 200ms">
                <div class="absolute -inset-3 border border-primary/20 group-hover:border-primary/50 transition-all duration-700"></div>
-               <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover border border-white/10 shadow-2xl grayscale group-hover:grayscale-0 transition-all duration-1500 scale-100 group-hover:scale-105">
+               <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=1200&q=80" alt="AFI Steakhouse interior" loading="lazy" class="w-full h-full object-cover border border-white/10 shadow-2xl grayscale group-hover:grayscale-0 transition-all duration-1500 scale-100 group-hover:scale-105">
                <div class="absolute bottom-4 right-4 bg-primary text-white p-3 font-display font-black text-[10px] uppercase tracking-widest">LIVE KITCHEN FEED</div>
             </div>
          </div>
@@ -627,7 +615,7 @@ onUnmounted(() => {
             <!-- Featured Blog Post (Large) -->
             <div class="lg:col-span-8 group cursor-pointer reveal-up" @click="openPost(blogPosts[0])">
               <div class="relative aspect-[16/9] overflow-hidden mb-12 border border-white/5 shadow-[0_0_80px_rgba(0,0,0,1)]">
-                <img :src="blogPosts[0].image" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1500 group-hover:scale-110">
+                <img :src="blogPosts[0].image" :alt="blogPosts[0].title" loading="lazy" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1500 group-hover:scale-110">
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-98"></div>
                 <div class="absolute bottom-12 left-12 right-12">
                   <div class="flex items-center gap-4 mb-8">

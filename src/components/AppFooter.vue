@@ -18,9 +18,9 @@
             Premium steakhouse delivering an authentic culinary experience with a fiery twist. Quality meats, exceptional service.
           </p>
           <div class="flex space-x-4">
-            <a class="text-gray-400 hover:text-primary transition-colors" href="#"><span class="material-icons">facebook</span></a>
-            <a class="text-gray-400 hover:text-primary transition-colors" href="#"><span class="material-icons">camera_alt</span></a>
-            <a class="text-gray-400 hover:text-primary transition-colors" href="#"><span class="material-icons">alternate_email</span></a>
+            <a class="text-gray-400 hover:text-primary transition-colors w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary/10" href="#" aria-label="Follow us on Facebook"><span class="material-icons" aria-hidden="true">facebook</span></a>
+            <a class="text-gray-400 hover:text-primary transition-colors w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary/10" href="#" aria-label="Follow us on Instagram"><span class="material-icons" aria-hidden="true">camera_alt</span></a>
+            <a class="text-gray-400 hover:text-primary transition-colors w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary/10" href="#" aria-label="Follow us on Twitter / X"><span class="material-icons" aria-hidden="true">alternate_email</span></a>
           </div>
         </div>
         <!-- Quick Links -->
@@ -69,11 +69,11 @@
           </ul>
         </div>
       </div>
-      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
-        <p>© 2023 AFI Steaks &amp; Platters. All rights reserved.</p>
+      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
+        <p>© 2025 AFI Steaks &amp; Platters. All rights reserved.</p>
         <div class="flex space-x-6 mt-4 md:mt-0">
-          <a class="hover:text-white" href="#">Privacy Policy</a>
-          <a class="hover:text-white" href="#">Terms of Service</a>
+          <a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+          <a class="hover:text-white transition-colors" href="#">Terms of Service</a>
         </div>
       </div>
     </div>

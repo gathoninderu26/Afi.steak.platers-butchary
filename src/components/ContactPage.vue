@@ -227,51 +227,59 @@ const faqs = [
                   <h2 class="text-5xl font-display font-black text-white uppercase tracking-tighter">Transmission Portal</h2>
                 </div>
                 
-                <form @submit.prevent class="space-y-10">
+                <form @submit.prevent class="space-y-10" novalidate>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div class="space-y-3">
-                      <label class="block text-xs font-black uppercase tracking-[0.3em] text-gray-600">First Name Protocol</label>
-                      <input 
-                        type="text" 
-                        placeholder="IDENTIFIER_ONE"
-                        class="block w-full bg-black border border-white/10 p-6 text-white placeholder:text-gray-800 focus:border-primary transition-all outline-none font-black tracking-widest uppercase"
+                      <label for="contact-first-name" class="block text-xs font-black uppercase tracking-[0.3em] text-gray-400">First Name Protocol</label>
+                      <input
+                        id="contact-first-name"
+                        type="text"
+                        placeholder="First Name"
+                        autocomplete="given-name"
+                        class="block w-full bg-black border border-white/10 p-6 text-white placeholder:text-gray-600 focus:border-primary transition-all outline-none font-black tracking-widest uppercase"
                       >
                     </div>
                     <div class="space-y-3">
-                      <label class="block text-xs font-black uppercase tracking-[0.3em] text-gray-600">Last Name Protocol</label>
-                      <input 
-                        type="text" 
-                        placeholder="IDENTIFIER_TWO"
-                        class="block w-full bg-black border border-white/10 p-6 text-white placeholder:text-gray-800 focus:border-primary transition-all outline-none font-black tracking-widest uppercase"
+                      <label for="contact-last-name" class="block text-xs font-black uppercase tracking-[0.3em] text-gray-400">Last Name Protocol</label>
+                      <input
+                        id="contact-last-name"
+                        type="text"
+                        placeholder="Last Name"
+                        autocomplete="family-name"
+                        class="block w-full bg-black border border-white/10 p-6 text-white placeholder:text-gray-600 focus:border-primary transition-all outline-none font-black tracking-widest uppercase"
                       >
                     </div>
                   </div>
-                  
+
                   <div class="space-y-3">
-                    <label class="block text-xs font-black uppercase tracking-[0.3em] text-gray-600">Encrypted Email Address</label>
-                    <input 
-                      type="email" 
-                      placeholder="UPLINK@PROTOCOL.COM"
-                      class="block w-full bg-black border border-white/10 p-6 text-white placeholder:text-gray-800 focus:border-primary transition-all outline-none font-black tracking-widest uppercase"
+                    <label for="contact-email" class="block text-xs font-black uppercase tracking-[0.3em] text-gray-400">Email Address</label>
+                    <input
+                      id="contact-email"
+                      type="email"
+                      placeholder="your@email.com"
+                      autocomplete="email"
+                      class="block w-full bg-black border border-white/10 p-6 text-white placeholder:text-gray-600 focus:border-primary transition-all outline-none font-black tracking-widest uppercase"
                     >
                   </div>
-                  
+
                   <div class="space-y-3">
-                    <label class="block text-xs font-black uppercase tracking-[0.3em] text-gray-600">Message Intelligence</label>
-                    <textarea 
+                    <label for="contact-message" class="block text-xs font-black uppercase tracking-[0.3em] text-gray-400">Your Message</label>
+                    <textarea
+                      id="contact-message"
                       rows="8"
-                      placeholder="ENTER_DATA_HERE..."
-                      class="block w-full bg-black border border-white/10 p-6 text-white placeholder:text-gray-800 focus:border-primary transition-all outline-none resize-none font-medium text-lg italic"
+                      placeholder="Tell us about your reservation, order, or inquiry..."
+                      class="block w-full bg-black border border-white/10 p-6 text-white placeholder:text-gray-600 focus:border-primary transition-all outline-none resize-none font-medium text-lg italic"
                     ></textarea>
                   </div>
-                  
+
                   <div class="pt-6 relative">
-                    <button class="w-full bg-primary hover:bg-white text-white hover:text-black py-7 font-display font-black text-lg uppercase tracking-[0.6em] transition-all transform active:scale-95 shadow-[0_20px_60px_rgba(217,4,4,0.4)]">
+                    <button type="submit" class="w-full bg-primary hover:bg-white text-white hover:text-black py-7 font-display font-black text-lg uppercase tracking-[0.6em] transition-all transform active:scale-95 shadow-[0_20px_60px_rgba(217,4,4,0.4)]">
                       Engage Uplink
                     </button>
                     <div class="absolute -bottom-8 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
                   </div>
                 </form>
+
 
                 <!-- Social Engagement Bar -->
                 <div class="mt-24 pt-12 border-t border-white/5 flex flex-wrap justify-between items-center gap-8">

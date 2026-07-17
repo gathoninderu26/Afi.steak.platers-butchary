@@ -1,4 +1,26 @@
-/* Global resets — Tailwind handles the rest via CDN in index.html */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* ── Colors ──────────────────────────────────────────────────────────────── */
+  --color-primary: #D90404;
+  --color-background-light: #F9FAFB;
+  --color-background-dark: #000000;
+  --color-surface-light: #000000;
+  --color-surface-dark: #000000;
+
+  /* ── Font Families ───────────────────────────────────────────────────────── */
+  --font-display: 'Oswald', sans-serif;
+  --font-body:    'Lato', sans-serif;
+  --font-script:  'Dancing Script', cursive;
+  --font-serif:   'Playfair Display', serif;
+
+  /* ── Background Images ───────────────────────────────────────────────────── */
+  --background-image-charcoal-texture: url('https://www.transparenttextures.com/patterns/black-felt.png');
+  --background-image-hero-pattern: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+}
+
+/* Global resets — Tailwind handles the rest */
 *, *::before, *::after {
   box-sizing: border-box;
 }

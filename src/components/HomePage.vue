@@ -403,10 +403,6 @@ const dailySpecialContainerOpacity = ref(1)
 const dailySpecialContainerTranslateY = ref(0)
 
 const scrollProgress = ref(0)
-const showScrollTop = ref(false)
-
-const bubbleVisible = ref(false)
-const bubbleAnimating = ref(false)
 
 // ─── Signature Highlights States (Independent Rows) ───────────────────────────
 const row1Index = ref(0)
@@ -543,25 +539,6 @@ function handleScroll() {
   const winScroll = document.body.scrollTop || document.documentElement.scrollTop
   const height = document.documentElement.scrollHeight - document.documentElement.clientHeight
   scrollProgress.value = (winScroll / height) * 100
-  showScrollTop.value = winScroll > 300
-}
-
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-// ─── Info Bubble ──────────────────────────────────────────────────────────────
-function toggleBubble(e) {
-  e.stopPropagation()
-  bubbleVisible.value = !bubbleVisible.value
-}
-
-function closeBubbleOnOutside(e) {
-  const bubble = document.getElementById('info-bubble')
-  const toggle = document.getElementById('info-bubble-toggle')
-  if (bubble && toggle && !bubble.contains(e.target) && !toggle.contains(e.target)) {
-    bubbleVisible.value = false
-  }
 }
 
 // ─── Lifecycle ────────────────────────────────────────────────────────────────
@@ -585,9 +562,6 @@ onMounted(() => {
 
   // Scroll
   window.addEventListener('scroll', handleScroll)
-
-  // Outside click for bubble
-  document.addEventListener('click', closeBubbleOnOutside)
 
   // ─── Intersection Observer for Card Reveals ────────────────────────────────
   const revealOptions = { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
@@ -624,7 +598,6 @@ onMounted(() => {
 onUnmounted(() => {
   if (emberInterval) clearInterval(emberInterval)
   window.removeEventListener('scroll', handleScroll)
-  document.removeEventListener('click', closeBubbleOnOutside)
 })
 </script>
 
@@ -656,17 +629,7 @@ onUnmounted(() => {
       :style="{ width: scrollProgress + '%' }"
     ></div>
 
-    <!-- Scroll Top Button -->
-    <button
-      id="scroll-top"
-      :class="['fixed bottom-8 right-8 z-[100] bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl shadow-primary/40 transition-all duration-300 hover:scale-110 hover:bg-red-700 group', showScrollTop ? 'show' : 'opacity-0 invisible translate-y-10']"
-      @click="scrollToTop"
-    >
-      <svg class="w-6 h-6 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor"
-        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-      </svg>
-    </button>
+
 
     <!-- Embers -->
     <div class="embers-container" id="embers">
@@ -683,84 +646,7 @@ onUnmounted(() => {
       ></div>
     </div>
 
-    <!-- Brand Info Bubble (Mobile Only) -->
-    <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[150] flex flex-col items-center lg:hidden">
-      <!-- Bubble Dialog -->
-      <div
-        id="info-bubble"
-        :class="[
-          'mb-6 bg-black/95 backdrop-blur-xl border border-primary/40 p-6 rounded-3xl shadow-[0_0_50px_rgba(217,4,4,0.3)] w-[320px] max-w-[calc(100vw-40px)] transform transition-all duration-500 origin-bottom',
-          bubbleVisible ? 'scale-100 opacity-100' : 'scale-90 opacity-0 hidden'
-        ]"
-      >
-        <div class="space-y-5">
-          <!-- Location -->
-          <div class="flex items-start gap-4 group/item">
-            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover/item:bg-primary/20 transition-colors">
-              <span class="material-icons text-primary">location_on</span>
-            </div>
-            <div>
-              <h4 class="font-serif font-bold text-xs uppercase tracking-[0.2em] text-primary mb-1">Our Location</h4>
-              <p class="text-sm text-white font-medium">Main Southern Bypass Road</p>
-              <p class="text-xs text-gray-400">Kikuyu, Kiambu County</p>
-            </div>
-          </div>
-          <!-- Hours -->
-          <div class="flex items-start gap-4 group/item">
-            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover/item:bg-primary/20 transition-colors">
-              <span class="material-icons text-primary">schedule</span>
-            </div>
-            <div class="flex-1">
-              <h4 class="font-serif font-bold text-xs uppercase tracking-[0.2em] text-primary mb-1">Opening Hours</h4>
-              <div class="space-y-1">
-                <div class="flex justify-between text-xs">
-                  <span class="text-gray-400">Mon - Thu</span>
-                  <span class="text-white font-medium">5:00 - 10:00 PM</span>
-                </div>
-                <div class="flex justify-between text-xs">
-                  <span class="text-gray-400">Fri - Sat</span>
-                  <span class="text-white font-medium">5:00 - 11:00 PM</span>
-                </div>
-                <div class="flex justify-between text-xs">
-                  <span class="text-gray-400">Sunday</span>
-                  <span class="text-white font-medium">4:00 - 9:30 PM</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Contact -->
-          <div class="flex items-start gap-4 group/item">
-            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover/item:bg-primary/20 transition-colors">
-              <span class="material-icons text-primary">contact_support</span>
-            </div>
-            <div>
-              <h4 class="font-serif font-bold text-xs uppercase tracking-[0.2em] text-primary mb-1">Get In Touch</h4>
-              <p class="text-sm text-white font-medium line-clamp-1">+254 700 000 000</p>
-              <p class="text-xs text-gray-400 line-clamp-1">reservations@afikenya.com</p>
-            </div>
-          </div>
-        </div>
-        <!-- Triangle Pointer -->
-        <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-black/95 rotate-45 border-r border-b border-primary/40"></div>
-      </div>
 
-      <!-- Toggle Button -->
-      <button
-        id="info-bubble-toggle"
-        class="bg-primary hover:bg-red-700 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-[0_5px_20px_rgba(217,4,4,0.3)] transition-all duration-300 hover:scale-110 active:scale-95 group relative"
-        @click="toggleBubble"
-      >
-        <div class="relative z-10 flex flex-col items-center leading-none">
-          <div class="flex items-end">
-            <span class="font-display font-bold text-lg tracking-tighter text-white">AF</span>
-            <div class="relative">
-              <span class="font-display font-bold text-lg tracking-tighter text-white">I</span>
-              <span class="absolute -top-0.5 left-0 w-full h-1 bg-white rounded-sm"></span>
-            </div>
-          </div>
-        </div>
-      </button>
-    </div>
 
     <!-- Navigation is handled by global AppNavbar in App.vue -->
 
@@ -800,12 +686,12 @@ onUnmounted(() => {
       </div>
 
       <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col items-center justify-center pt-0 text-center min-h-[70vh]">
-        <div class="max-w-[2000px] mx-auto flex flex-col items-center -mt-32">
+        <div class="max-w-[2000px] mx-auto flex flex-col items-center -mt-16 sm:-mt-24 md:-mt-32">
           <!-- Brand Logo H1 -->
           <h1 class="mb-12 group cursor-default transform -rotate-3 -skew-x-[12deg] origin-center mx-auto" id="brand-logo">
             <div class="flex items-end justify-center leading-none">
               <span
-                class="font-display font-bold text-6xl sm:text-9xl md:text-[10rem] tracking-tight text-white text-shadow-xl drop-shadow-[0_0_25px_rgba(255,255,255,0.1)] animate-fade-in"
+                class="font-display font-bold text-5xl sm:text-8xl md:text-[10rem] tracking-tight text-white text-shadow-xl drop-shadow-[0_0_25px_rgba(255,255,255,0.1)] animate-fade-in"
                 id="logo-af"
               >
                 <span
@@ -821,7 +707,7 @@ onUnmounted(() => {
               </span>
               <div class="relative">
                 <span
-                  class="font-display font-bold text-6xl sm:text-9xl md:text-[10rem] tracking-tight text-white text-shadow-xl drop-shadow-[0_0_25px_rgba(255,255,255,0.1)] animate-fade-in"
+                  class="font-display font-bold text-5xl sm:text-8xl md:text-[10rem] tracking-tight text-white text-shadow-xl drop-shadow-[0_0_25px_rgba(255,255,255,0.1)] animate-fade-in"
                   id="logo-i"
                   style="animation-delay: 0.1s;"
                 >
@@ -843,7 +729,7 @@ onUnmounted(() => {
               </div>
             </div>
             <div
-              class="font-script text-4xl sm:text-5xl md:text-6xl mt-1 text-gray-300 dark:text-gray-400 opacity-0 animate-fade-in flex justify-center w-full"
+              class="font-script text-3xl sm:text-5xl md:text-6xl mt-1 text-gray-300 dark:text-gray-400 opacity-0 animate-fade-in flex justify-center w-full"
               style="animation-delay: 0.6s"
               id="brand-script"
             >
@@ -866,9 +752,9 @@ onUnmounted(() => {
             :style="{ opacity: dailySpecialContainerOpacity, transform: `translateY(${dailySpecialContainerTranslateY}px)` }"
             @click="cycleSpecial"
           >
-            <div class="flex flex-col sm:flex-row items-center gap-8 mb-4 overflow-visible">
+            <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 mb-4 overflow-hidden">
               <span
-                class="font-display text-[#FFF5E1]/70 font-black text-5xl sm:text-8xl md:text-[9rem] uppercase tracking-tight leading-none select-none text-outline-premium group-hover/special:text-[#FFF5E1]/90 whitespace-nowrap"
+                class="font-display text-[#FFF5E1]/70 font-black text-4xl sm:text-7xl md:text-[9rem] uppercase tracking-tight leading-none select-none text-outline-premium group-hover/special:text-[#FFF5E1]/90 break-words max-w-full"
                 id="daily-special-day"
               >
                 <span
@@ -889,7 +775,7 @@ onUnmounted(() => {
             </div>
 
             <h2
-              class="font-display text-4xl sm:text-6xl md:text-8xl text-white font-black uppercase tracking-normal leading-none mb-6 text-glow-white transition-all group-hover/special:tracking-wider whitespace-nowrap"
+              class="font-display text-3xl sm:text-5xl md:text-8xl text-white font-black uppercase tracking-normal leading-none mb-6 text-glow-white transition-all group-hover/special:tracking-wider break-words max-w-full"
               id="daily-special-name"
             >
               <span
@@ -905,7 +791,7 @@ onUnmounted(() => {
             </h2>
 
             <p
-              class="font-body text-sm sm:text-base md:text-xl text-gray-400 mb-4 max-w-3xl font-light border-x border-primary/30 px-16 italic leading-relaxed transition-all group-hover/special:text-gray-200"
+              class="font-body text-sm sm:text-base md:text-xl text-gray-400 mb-4 max-w-3xl font-light border-x border-primary/30 px-4 sm:px-10 md:px-16 italic leading-relaxed transition-all group-hover/special:text-gray-200"
               id="daily-special-description"
             >
               {{ currentSpecial.description }}
@@ -941,7 +827,7 @@ onUnmounted(() => {
     </section>
 
     <!-- Signature Highlights Dynamic Staggered Carousel Overlay (75% Overlap) -->
-    <div class="relative z-40 max-w-[2400px] mx-auto px-4 -mt-32 sm:-mt-64 md:-mt-80 lg:-mt-96">
+    <div class="relative z-40 max-w-[2400px] mx-auto px-2 sm:px-4 -mt-8 sm:-mt-32 md:-mt-64 lg:-mt-96">
       <div class="flex flex-col gap-12 md:gap-32">
         <!-- Row 1 Container: Independent Controls -->
         <div class="relative group/row1">
@@ -958,11 +844,11 @@ onUnmounted(() => {
           </div>
           
           <!-- Row 1 Arrows -->
-          <button @click="prevRow1" class="absolute -left-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row1:opacity-100 md:-translate-x-4 md:group-hover/row1:translate-x-0 overflow-visible">
-            <span class="material-icons">chevron_left</span>
+          <button @click="prevRow1" aria-label="Previous steaks" class="absolute -left-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row1:opacity-100 md:-translate-x-4 md:group-hover/row1:translate-x-0 overflow-visible">
+            <span class="material-icons" aria-hidden="true">chevron_left</span>
           </button>
-          <button @click="nextRow1" class="absolute -right-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row1:opacity-100 md:translate-x-4 md:group-hover/row1:translate-x-0 overflow-visible">
-            <span class="material-icons">chevron_right</span>
+          <button @click="nextRow1" aria-label="Next steaks" class="absolute -right-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row1:opacity-100 md:translate-x-4 md:group-hover/row1:translate-x-0 overflow-visible">
+            <span class="material-icons" aria-hidden="true">chevron_right</span>
           </button>
 
           <!-- Row 1: Signature Steaks & Platters -->
@@ -984,11 +870,11 @@ onUnmounted(() => {
                     <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-110"/>
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
                     <div class="absolute top-5 right-5 flex flex-col gap-2 translate-x-12 group-hover/card:translate-x-0 transition-transform duration-500">
-                      <button @click.stop="handleAddToCart(item)" class="w-9 h-9 bg-primary text-white flex items-center justify-center hover:bg-white hover:text-black transition-colors shadow-2xl">
-                        <span class="material-icons text-lg">shopping_cart</span>
+                      <button @click.stop="handleAddToCart(item)" :aria-label="'Add ' + item.name + ' to cart'" class="w-9 h-9 bg-primary text-white flex items-center justify-center hover:bg-white hover:text-black transition-colors shadow-2xl">
+                        <span class="material-icons text-lg" aria-hidden="true">shopping_cart</span>
                       </button>
-                      <button @click.stop="openHighlightModal(item)" class="w-9 h-9 bg-white text-black flex items-center justify-center hover:bg-primary hover:text-white transition-colors shadow-2xl">
-                        <span class="material-icons text-lg">fullscreen</span>
+                      <button @click.stop="openHighlightModal(item)" :aria-label="'View details for ' + item.name" class="w-9 h-9 bg-white text-black flex items-center justify-center hover:bg-primary hover:text-white transition-colors shadow-2xl">
+                        <span class="material-icons text-lg" aria-hidden="true">fullscreen</span>
                       </button>
                     </div>
                     <div class="absolute top-5 left-5 bg-black/60 backdrop-blur-md px-2 py-0.5 flex items-center gap-1.5 border border-white/10">
@@ -1029,11 +915,11 @@ onUnmounted(() => {
           </div>
 
           <!-- Row 2 Arrows -->
-          <button @click="prevRow2" class="absolute -left-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row2:opacity-100 md:-translate-x-4 md:group-hover/row2:translate-x-0 overflow-visible">
-            <span class="material-icons">chevron_left</span>
+          <button @click="prevRow2" aria-label="Previous sides" class="absolute -left-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row2:opacity-100 md:-translate-x-4 md:group-hover/row2:translate-x-0 overflow-visible">
+            <span class="material-icons" aria-hidden="true">chevron_left</span>
           </button>
-          <button @click="nextRow2" class="absolute -right-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row2:opacity-100 md:translate-x-4 md:group-hover/row2:translate-x-0 overflow-visible">
-            <span class="material-icons">chevron_right</span>
+          <button @click="nextRow2" aria-label="Next sides" class="absolute -right-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row2:opacity-100 md:translate-x-4 md:group-hover/row2:translate-x-0 overflow-visible">
+            <span class="material-icons" aria-hidden="true">chevron_right</span>
           </button>
 
           <!-- Row 2: Gourmet Sides & Desserts -->
@@ -1054,11 +940,11 @@ onUnmounted(() => {
                     <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-110"/>
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
                     <div class="absolute top-5 right-5 flex flex-col gap-2 translate-x-12 group-hover/card:translate-x-0 transition-transform duration-500">
-                      <button class="w-9 h-9 bg-primary text-white flex items-center justify-center hover:bg-white hover:text-black transition-colors shadow-2xl">
-                        <span class="material-icons text-lg">shopping_cart</span>
+                      <button @click.stop="handleAddToCart(item)" :aria-label="'Add ' + item.name + ' to cart'" class="w-9 h-9 bg-primary text-white flex items-center justify-center hover:bg-white hover:text-black transition-colors shadow-2xl">
+                        <span class="material-icons text-lg" aria-hidden="true">shopping_cart</span>
                       </button>
-                      <button @click.stop="openHighlightModal(item)" class="w-9 h-9 bg-white text-black flex items-center justify-center hover:bg-primary hover:text-white transition-colors shadow-2xl">
-                        <span class="material-icons text-lg">fullscreen</span>
+                      <button @click.stop="openHighlightModal(item)" :aria-label="'View details for ' + item.name" class="w-9 h-9 bg-white text-black flex items-center justify-center hover:bg-primary hover:text-white transition-colors shadow-2xl">
+                        <span class="material-icons text-lg" aria-hidden="true">fullscreen</span>
                       </button>
                     </div>
                     <div class="absolute top-5 left-5 bg-black/60 backdrop-blur-md px-2 py-0.5 flex items-center gap-1.5 border border-white/10">
@@ -1215,29 +1101,29 @@ onUnmounted(() => {
     </section>
 
     <!-- Savage Specialties: Overlapping Tactical Dossiers -->
-    <section class="py-40 bg-black relative overflow-hidden border-t border-white/5" id="specialties-section">
+    <section class="py-16 sm:py-24 md:py-40 bg-black relative overflow-hidden border-t border-white/5" id="specialties-section">
         <!-- Environmental Elements -->
         <div class="absolute top-0 right-0 w-1/2 h-full bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
         <div class="absolute bottom-0 left-0 w-1/3 h-1/2 bg-primary/5 blur-[100px] rounded-full pointer-events-none"></div>
 
         <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-28 reveal-on-scroll opacity-0 translate-y-12 transition-all duration-700">
-                <span class="font-script text-3xl text-primary block mb-2">Central Intelligence</span>
-                <h2 class="text-5xl md:text-7xl font-display text-white font-black tracking-tight uppercase">
+            <div class="text-center mb-12 sm:mb-20 md:mb-28 reveal-on-scroll opacity-0 translate-y-12 transition-all duration-700">
+                <span class="font-script text-2xl sm:text-3xl text-primary block mb-2">Central Intelligence</span>
+                <h2 class="text-4xl sm:text-5xl md:text-7xl font-display text-white font-black tracking-tight uppercase">
                     Savage <span class="text-primary italic">Specialties</span>
                 </h2>
                 <div class="w-32 h-1 bg-primary mx-auto mt-6"></div>
             </div>
 
             <!-- Asymmetric Tactical Bento Grid -->
-            <div class="grid grid-cols-12 gap-6 lg:h-[800px]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:h-[800px]">
                 <!-- Master Module: Elite Steaks (Large Primary Asset) -->
-                <div class="col-span-12 lg:col-span-8 relative group overflow-hidden border border-white/5 hover:border-primary/40 transition-all duration-700 reveal-on-scroll opacity-0 translate-x-[-20px]">
-                    <img :src="specialtyCategories[0].image" class="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-80 transition-all duration-[2000ms]">
+                <div class="lg:col-span-8 relative group overflow-hidden border border-white/5 hover:border-primary/40 transition-all duration-700 reveal-on-scroll opacity-0 translate-x-[-20px] min-h-[350px] sm:min-h-[500px] lg:min-h-0">
+                    <img :src="specialtyCategories[0].image" :alt="specialtyCategories[0].title" loading="lazy" class="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-80 transition-all duration-[2000ms]">
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
                     
                     <!-- HUD Elements -->
-                    <div class="absolute inset-0 p-12 flex flex-col justify-end">
+                    <div class="absolute inset-0 p-6 sm:p-12 flex flex-col justify-end">
                         <div class="flex items-center gap-4 mb-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
                             <span class="text-primary font-display font-black text-6xl opacity-20 italic">01</span>
                             <div class="h-[1px] w-12 bg-primary/40"></div>
@@ -1245,7 +1131,7 @@ onUnmounted(() => {
                         </div>
                         
                         <div class="max-w-xl">
-                            <h3 class="text-white font-display text-5xl md:text-7xl font-black uppercase mb-6 tracking-tighter group-hover:text-primary transition-colors">{{ specialtyCategories[0].title }}</h3>
+                            <h3 class="text-white font-display text-3xl sm:text-5xl md:text-7xl font-black uppercase mb-6 tracking-tighter group-hover:text-primary transition-colors">{{ specialtyCategories[0].title }}</h3>
                             <p class="text-gray-300 text-lg font-light italic leading-relaxed mb-8 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700">
                                 "{{ specialtyCategories[0].description }}"
                             </p>
@@ -1264,10 +1150,10 @@ onUnmounted(() => {
                 </div>
 
                 <!-- Secondary Stacked Modules -->
-                <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+                <div class="lg:col-span-4 flex flex-col gap-6">
                     <!-- Module 2: Deployment Platters -->
-                    <div class="flex-1 relative group overflow-hidden border border-white/5 hover:border-primary/40 transition-all duration-700 reveal-on-scroll opacity-0 translate-x-[20px]" style="transition-delay: 200ms">
-                        <img :src="specialtyCategories[1].image" class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:scale-110 group-hover:opacity-60 transition-all duration-[2000ms]">
+                    <div class="flex-1 min-h-[240px] sm:min-h-[300px] lg:min-h-0 relative group overflow-hidden border border-white/5 hover:border-primary/40 transition-all duration-700 reveal-on-scroll opacity-0 translate-x-[20px]" style="transition-delay: 200ms">
+                        <img :src="specialtyCategories[1].image" :alt="specialtyCategories[1].title" loading="lazy" class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:scale-110 group-hover:opacity-60 transition-all duration-[2000ms]">
                         <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
                         
                         <div class="absolute inset-0 p-10 flex flex-col justify-end">
@@ -1285,8 +1171,8 @@ onUnmounted(() => {
                     </div>
 
                     <!-- Module 3: Precision Butchery -->
-                    <div class="flex-1 relative group overflow-hidden border border-white/5 hover:border-primary/40 transition-all duration-700 reveal-on-scroll opacity-0 translate-x-[20px]" style="transition-delay: 400ms">
-                        <img :src="specialtyCategories[2].image" class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:scale-110 group-hover:opacity-60 transition-all duration-[2000ms]">
+                    <div class="flex-1 min-h-[240px] sm:min-h-[300px] lg:min-h-0 relative group overflow-hidden border border-white/5 hover:border-primary/40 transition-all duration-700 reveal-on-scroll opacity-0 translate-x-[20px]" style="transition-delay: 400ms">
+                        <img :src="specialtyCategories[2].image" :alt="specialtyCategories[2].title" loading="lazy" class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:scale-110 group-hover:opacity-60 transition-all duration-[2000ms]">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                         
                         <div class="absolute inset-0 p-10 flex flex-col justify-end">
@@ -1307,20 +1193,20 @@ onUnmounted(() => {
 
 
     <!-- Savage Service Protocols: Tactical Timeline -->
-    <section class="py-32 bg-black relative overflow-hidden border-t border-white/5">
+    <section class="py-16 sm:py-24 md:py-32 bg-black relative overflow-hidden border-t border-white/5">
         <!-- Central Timeline Track -->
         <div class="absolute left-1/2 top-0 bottom-0 w-[1px] bg-white/5 hidden lg:block">
             <div class="absolute inset-0 bg-gradient-to-b from-primary via-primary/50 to-transparent h-1/2"></div>
         </div>
 
         <div class="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div class="text-center mb-24 reveal-on-scroll opacity-0 translate-y-12 transition-all duration-700">
-                <span class="font-script text-3xl text-primary block mb-2">Operational Workflow</span>
-                <h2 class="text-5xl md:text-7xl font-display text-white mb-4 tracking-tight uppercase">Savage <span class="text-primary italic">Lifecycle</span></h2>
+            <div class="text-center mb-12 sm:mb-16 md:mb-24 reveal-on-scroll opacity-0 translate-y-12 transition-all duration-700">
+                <span class="font-script text-2xl sm:text-3xl text-primary block mb-2">Operational Workflow</span>
+                <h2 class="text-4xl sm:text-5xl md:text-7xl font-display text-white mb-4 tracking-tight uppercase">Savage <span class="text-primary italic">Lifecycle</span></h2>
                 <div class="w-32 h-1 bg-primary mx-auto"></div>
             </div>
             
-            <div class="space-y-32">
+            <div class="space-y-16 sm:space-y-24 md:space-y-32">
                 <div v-for="(service, index) in savageServices" :key="service.title" 
                      class="group relative flex flex-col lg:flex-row items-center gap-12 lg:gap-24 reveal-on-scroll opacity-0 translate-y-24 transition-all duration-1000"
                      :class="index % 2 === 0 ? '' : 'lg:flex-row-reverse'"
@@ -1334,7 +1220,7 @@ onUnmounted(() => {
 
                     <!-- Large Image Card -->
                     <div class="w-full lg:w-1/2 group/img relative aspect-[16/10] overflow-hidden border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] hover:border-primary/40 transition-colors duration-500">
-                        <img :src="service.image" class="w-full h-full object-cover grayscale opacity-40 group-hover/img:scale-110 group-hover/img:grayscale-0 group-hover/img:opacity-100 transition-all duration-[2000ms]">
+                        <img :src="service.image" :alt="service.title" loading="lazy" class="w-full h-full object-cover grayscale opacity-40 group-hover/img:scale-110 group-hover/img:grayscale-0 group-hover/img:opacity-100 transition-all duration-[2000ms]">
                         <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
                         
                         <!-- Scanner Effect -->
@@ -1352,10 +1238,10 @@ onUnmounted(() => {
                     <!-- Content Card -->
                     <div class="w-full lg:w-1/2 text-center lg:text-left">
                         <span class="text-primary font-display font-black text-xs uppercase tracking-[0.5em] mb-4 block">Intelligence Node</span>
-                        <h3 class="font-display text-4xl md:text-5xl font-black text-white uppercase mb-6 tracking-tight group-hover:text-primary transition-all">
+                        <h3 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase mb-4 sm:mb-6 tracking-tight group-hover:text-primary transition-all">
                             {{ service.title }}
                         </h3>
-                        <p class="text-lg text-gray-400 font-light leading-relaxed mb-10 max-w-xl mx-auto lg:mx-0 group-hover:text-gray-300 transition-colors">
+                        <p class="text-base sm:text-lg text-gray-400 font-light leading-relaxed mb-6 sm:mb-10 max-w-xl mx-auto lg:mx-0 group-hover:text-gray-300 transition-colors">
                             {{ service.desc }}
                         </p>
                         <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4">
@@ -1371,21 +1257,21 @@ onUnmounted(() => {
     </section>
 
     <!-- Savage Legacy: Story Section -->
-    <section class="bg-black py-28 relative overflow-hidden border-t border-white/5">
+    <section class="bg-black py-14 sm:py-20 md:py-28 relative overflow-hidden border-t border-white/5">
         <div class="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-20">
-                <span class="font-script text-3xl text-primary block mb-2">Our Ritual</span>
-                <h2 class="text-5xl md:text-6xl font-display text-white mb-4 tracking-tight uppercase">Savage <span class="text-primary italic">Legacy</span></h2>
+            <div class="text-center mb-10 sm:mb-16 md:mb-20">
+                <span class="font-script text-2xl sm:text-3xl text-primary block mb-2">Our Ritual</span>
+                <h2 class="text-4xl sm:text-5xl md:text-6xl font-display text-white mb-4 tracking-tight uppercase">Savage <span class="text-primary italic">Legacy</span></h2>
                 <div class="w-24 h-1 bg-primary mx-auto"></div>
             </div>
 
-            <div class="space-y-32">
+            <div class="space-y-16 sm:space-y-24 md:space-y-32">
                 <!-- Section 1: The Flame -->
                 <section class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700">
                     <div class="order-2 lg:order-1 text-left">
                         <span class="text-primary font-display font-black text-xs uppercase tracking-[0.4em] mb-4 block">Where it Began</span>
-                        <h2 class="font-display text-5xl md:text-6xl font-bold uppercase tracking-tighter text-white mb-8">The <span class="text-primary italic">Eternal</span> Flame</h2>
-                        <p class="text-gray-400 text-lg md:text-xl font-light leading-relaxed mb-10 italic">
+                        <h2 class="font-display text-3xl sm:text-4xl md:text-6xl font-bold uppercase tracking-tighter text-white mb-6 sm:mb-8">The <span class="text-primary italic">Eternal</span> Flame</h2>
+                        <p class="text-gray-400 text-base sm:text-lg md:text-xl font-light leading-relaxed mb-6 sm:mb-10 italic">
                             "Savage wasn't born in a kitchen, it was forged in the fire. We believe that meat is a ritual, not just a meal. Our founders sought to bring back the raw, primal essence of the hunt."
                         </p>
                         <div class="flex items-center gap-6">
@@ -1409,8 +1295,8 @@ onUnmounted(() => {
                     </div>
                     <div class="text-left">
                         <span class="text-primary font-display font-black text-xs uppercase tracking-[0.4em] mb-4 block">Technical Mastery</span>
-                        <h2 class="font-display text-5xl md:text-6xl font-bold uppercase tracking-tighter text-white mb-8">Raw <span class="text-primary italic">Precision</span></h2>
-                        <p class="text-gray-400 text-lg md:text-xl font-light leading-relaxed mb-8">
+                        <h2 class="font-display text-3xl sm:text-4xl md:text-6xl font-bold uppercase tracking-tighter text-white mb-6 sm:mb-8">Raw <span class="text-primary italic">Precision</span></h2>
+                        <p class="text-gray-400 text-base sm:text-lg md:text-xl font-light leading-relaxed mb-6 sm:mb-8">
                             Every cut is curated and monitored in our salt-brick vaults. We orchestrate a symphony of smoke, heat, and time.
                         </p>
                         <ul class="space-y-4 text-white font-display text-xs uppercase tracking-widest">
@@ -1431,7 +1317,7 @@ onUnmounted(() => {
         </div>
         <div class="relative z-10 max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <span class="font-script text-3xl text-primary block mb-1">Heritage & Growth</span>
-            <h2 class="text-5xl md:text-7xl font-display text-white mb-2 tracking-tight uppercase drop-shadow-lg">
+            <h2 class="text-4xl sm:text-5xl md:text-7xl font-display text-white mb-2 tracking-tight uppercase drop-shadow-lg">
                 Our <span class="text-primary">Locations</span>
             </h2>
             <p class="text-lg text-gray-300 font-light max-w-2xl mx-auto font-script italic">Find your nearest fiery experience.</p>
@@ -1441,8 +1327,8 @@ onUnmounted(() => {
     <section class="bg-black py-20 relative overflow-hidden reveal-on-scroll opacity-0 translate-y-12 transition-all duration-600">
         <div class="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Full Width Map Header -->
-            <div class="mb-16 h-[500px] lg:h-[600px] rounded-none overflow-hidden shadow-2xl border border-white/10 relative bg-black group/map">
-                <div class="absolute top-6 left-6 z-10 bg-black/80 backdrop-blur-xl border border-white/10 p-6 rounded-none text-white shadow-2xl max-w-xs transition-transform duration-500 group/map:translate-x-2 text-left">
+            <div class="mb-8 sm:mb-16 h-[280px] sm:h-[400px] lg:h-[600px] rounded-none overflow-hidden shadow-2xl border border-white/10 relative bg-black group/map">
+                <div class="absolute top-3 left-3 sm:top-6 sm:left-6 z-10 bg-black/80 backdrop-blur-xl border border-white/10 p-3 sm:p-6 rounded-none text-white shadow-2xl max-w-[180px] sm:max-w-xs transition-transform duration-500 group/map:translate-x-2 text-left">
                     <h4 class="font-display text-xl text-primary font-bold uppercase tracking-tight mb-2">Empire Map</h4>
                     <p class="text-xs text-gray-400 font-light leading-relaxed">
                         Identify your target. Navigate the AFI strongholds across the region.
@@ -1492,17 +1378,17 @@ onUnmounted(() => {
     <!-- Locations Section End -->
 
     <!-- Savage Tales: Testimonials -->
-    <section class="bg-black py-24 relative overflow-hidden reveal-on-scroll opacity-0 translate-y-12 transition-all duration-600 border-t border-white/5">
+    <section class="bg-black py-14 sm:py-20 md:py-24 relative overflow-hidden reveal-on-scroll opacity-0 translate-y-12 transition-all duration-600 border-t border-white/5">
         <div class="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <span class="font-script text-3xl text-primary block mb-2">Voice of the Tribe</span>
-                <h2 class="text-5xl md:text-7xl font-display text-white mb-4 tracking-tight uppercase">Savage <span class="text-primary italic">Tales</span></h2>
+            <div class="text-center mb-10 sm:mb-14 md:mb-16">
+                <span class="font-script text-2xl sm:text-3xl text-primary block mb-2">Voice of the Tribe</span>
+                <h2 class="text-4xl sm:text-5xl md:text-7xl font-display text-white mb-4 tracking-tight uppercase">Savage <span class="text-primary italic">Tales</span></h2>
                 <div class="w-24 h-1 bg-primary mx-auto"></div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
                 <div v-for="(t, index) in testimonials" :key="t.name" 
-                     class="bg-black/95 backdrop-blur-3xl border border-white/10 p-10 flex flex-col group hover:border-primary/60 transition-all duration-500 reveal-on-scroll opacity-0 translate-y-12"
+                     class="bg-black/95 backdrop-blur-3xl border border-white/10 p-6 sm:p-10 flex flex-col group hover:border-primary/60 transition-all duration-500 reveal-on-scroll opacity-0 translate-y-12"
                      :style="{ transitionDelay: (index * 150) + 'ms' }">
                     <div class="flex items-center gap-4 mb-8">
                         <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary grayscale group-hover:grayscale-0 transition-all duration-500 shadow-[0_0_20px_rgba(217,4,4,0.3)]">
@@ -1747,12 +1633,7 @@ onUnmounted(() => {
   transition: width 0.1s ease;
 }
 
-/* ── Scroll top button visible state ──────────────────────────────────────── */
-#scroll-top.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
+
 
 /* ── Smooth scroll ─────────────────────────────────────────────────────────── */
 :global(html) {
