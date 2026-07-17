@@ -688,6 +688,8 @@ const itemsByCategory = computed(() => {
 })
 
 const splitItemsForRows = (items) => {
+    // On mobile (< sm) always single row; desktop splits large sets into 2 rows
+    if (typeof window !== 'undefined' && window.innerWidth < 640) return [items]
     if (items.length < 6) return [items]
     const mid = Math.ceil(items.length / 2)
     return [items.slice(0, mid), items.slice(mid)]
@@ -696,11 +698,11 @@ const splitItemsForRows = (items) => {
 // ─── Carousel Logic ──────────────────────────────────────────────────────────
 const scrollCarousel = (id, direction) => {
     const el = document.getElementById(id)
-    if (el) {
-        // Dynamic scroll amount based on container width for precise pagination
-        const scrollAmount = direction === 'next' ? el.clientWidth * 0.8 : -el.clientWidth * 0.8
-        el.scrollBy({ left: scrollAmount, behavior: 'smooth' })
-    }
+    if (!el) return
+    // Scroll by one card width (first child width + gap)
+    const firstCard = el.querySelector('[data-card]')
+    const cardW = firstCard ? firstCard.offsetWidth + 24 : el.clientWidth * 0.85
+    el.scrollBy({ left: direction === 'next' ? cardW : -cardW, behavior: 'smooth' })
 }
 
 // ─── Unified Animation System ────────────────────────────────────────────────
@@ -995,11 +997,11 @@ onUnmounted(() => {
             <!-- MULTI-TIER CAROUSEL AREA: INDEPENDENT STACKED ROWS -->
             <div class="flex flex-col gap-8">
                 <div v-for="(rowItems, rowIndex) in splitItemsForRows(items)" :key="rowIndex" 
-                     class="relative group/carousel px-16 reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700"
+                     class="relative group/carousel reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700"
                      :style="{ transitionDelay: (rowIndex * 150) + 'ms' }">
                     
-                    <!-- Tactical Row Indicator -->
-                    <div class="absolute -left-2 top-0 h-full flex flex-col items-center justify-center gap-2 opacity-20 group-hover/carousel:opacity-100 transition-opacity">
+                    <!-- Tactical Row Indicator (desktop only) -->
+                    <div class="absolute -left-2 top-0 h-full flex-col items-center justify-center gap-2 opacity-20 group-hover/carousel:opacity-100 transition-opacity hidden lg:flex">
                         <span class="text-[8px] font-black text-primary -rotate-90 uppercase tracking-widest whitespace-nowrap">Tier {{ rowIndex + 1 }}</span>
                         <div class="w-[1px] flex-1 bg-gradient-to-b from-transparent via-primary to-transparent"></div>
                     </div>
@@ -1007,9 +1009,9 @@ onUnmounted(() => {
                     <!-- Left Arrow Button -->
                     <button 
                         @click="scrollCarousel(`carousel-${sanitizeId(category)}-${rowIndex}`, 'prev')"
-                        class="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-24 bg-black/80 border border-white/10 flex items-center justify-center hover:bg-primary hover:border-primary transition-all text-white group"
+                        class="absolute left-1 sm:left-0 top-1/2 -translate-y-1/2 z-20 w-9 h-16 sm:w-12 sm:h-24 bg-black/90 border border-white/10 flex items-center justify-center hover:bg-primary hover:border-primary transition-all text-white group shadow-xl"
                     >
-                        <span class="material-icons text-3xl group-hover:scale-125 transition-transform">chevron_left</span>
+                        <span class="material-icons text-xl sm:text-3xl group-hover:scale-125 transition-transform">chevron_left</span>
                     </button>
 
                     <!-- Carousel Container -->
@@ -1017,10 +1019,13 @@ onUnmounted(() => {
                         :id="`carousel-${sanitizeId(category)}-${rowIndex}`"
                         @mouseenter="pausedCategories[`carousel-${sanitizeId(category)}-${rowIndex}`] = true"
                         @mouseleave="pausedCategories[`carousel-${sanitizeId(category)}-${rowIndex}`] = false"
-                        class="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 no-scrollbar px-4"
+                        @touchstart="pausedCategories[`carousel-${sanitizeId(category)}-${rowIndex}`] = true"
+                        @touchend="pausedCategories[`carousel-${sanitizeId(category)}-${rowIndex}`] = false"
+                        class="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 no-scrollbar px-10 sm:px-14"
                     >
-                        <div v-for="item in rowItems" :key="item.name" 
-                             class="w-[calc(25vw-48px)] snap-start bg-black/95 backdrop-blur-3xl border border-white/10 rounded-none overflow-hidden group/card hover:border-primary/60 transition-all duration-500 shadow-[0_30px_70px_rgba(0,0,0,0.9)] flex flex-col h-[420px] min-w-[280px]">
+                        <div v-for="item in rowItems" :key="item.name"
+                             data-card
+                             class="snap-start flex-shrink-0 w-[calc(100vw-88px)] sm:w-[calc(50vw-56px)] lg:w-[calc(25vw-56px)] min-w-[240px] max-w-[340px] bg-black/95 backdrop-blur-3xl border border-white/10 rounded-none overflow-hidden group/card hover:border-primary/60 transition-all duration-500 shadow-[0_30px_70px_rgba(0,0,0,0.9)] flex flex-col h-[400px]">
                             
                             <div class="relative h-44 overflow-hidden cursor-pointer" @click="showItemDetail = item">
                                 <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-110">
@@ -1062,9 +1067,9 @@ onUnmounted(() => {
                     <!-- Right Arrow Button -->
                     <button 
                         @click="scrollCarousel(`carousel-${sanitizeId(category)}-${rowIndex}`, 'next')"
-                        class="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-24 bg-black/80 border border-white/10 flex items-center justify-center hover:bg-primary hover:border-primary transition-all text-white group"
+                        class="absolute right-1 sm:right-0 top-1/2 -translate-y-1/2 z-20 w-9 h-16 sm:w-12 sm:h-24 bg-black/90 border border-white/10 flex items-center justify-center hover:bg-primary hover:border-primary transition-all text-white group shadow-xl"
                     >
-                        <span class="material-icons text-3xl group-hover:scale-125 transition-transform">chevron_right</span>
+                        <span class="material-icons text-xl sm:text-3xl group-hover:scale-125 transition-transform">chevron_right</span>
                     </button>
                 </div>
             </div>
