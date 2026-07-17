@@ -960,7 +960,8 @@ onMounted(() => {
 
                         <!-- Tactical Ads -->
                         <div v-for="(ad, i) in intelligenceAds" :key="ad.title" 
-                             class="h-[300px] relative overflow-hidden group cursor-pointer border border-primary/10">
+                             class="h-[300px] relative overflow-hidden group cursor-pointer border border-primary/10"
+                             :class="{ 'hidden xl:block': i > 0 }">
                             <img :src="ad.image" class="w-full h-full object-cover grayscale brightness-50 group-hover:scale-110 group-hover:grayscale-0 transition-all duration-1000">
                             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
                             <div class="absolute bottom-8 left-8 right-8 text-left">
