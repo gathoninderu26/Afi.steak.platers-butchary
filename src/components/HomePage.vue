@@ -405,53 +405,59 @@ const dailySpecialContainerTranslateY = ref(0)
 const scrollProgress = ref(0)
 
 // ─── Signature Highlights States (Independent Rows) ───────────────────────────
-const row1Index = ref(0)
-const row2Index = ref(1) // Row 2 starts "ahead"
 const isHighlightModalOpen = ref(false)
 const selectedHighlight = ref(null)
 const revealedHighlights = ref(false)
 const revealedWhyChooseUs = ref(false)
 const revealedSignatureDish = ref(false)
 
-// Responsive carousel calculations
-const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1200)
-const handleResize = () => {
-  windowWidth.value = window.innerWidth
-}
-
-const cardWidthPercent = computed(() => {
-  if (windowWidth.value >= 1024) return 25      // lg: 4 cards visible
-  if (windowWidth.value >= 768) return 33.3333   // md: 3 cards visible
-  if (windowWidth.value >= 640) return 50        // sm: 2 cards visible
-  return 100                                     // xs/mobile: 1 card visible
-})
-
-const maxRowIndex = computed(() => {
-  const visibleCards = windowWidth.value >= 1024 ? 4 : (windowWidth.value >= 768 ? 3 : (windowWidth.value >= 640 ? 2 : 1))
-  return 10 - visibleCards // 10 items in each slice
-})
-
-const nextRow1 = () => { row1Index.value = (row1Index.value < maxRowIndex.value) ? row1Index.value + 1 : 0 }
-const prevRow1 = () => { row1Index.value = (row1Index.value > 0) ? row1Index.value - 1 : maxRowIndex.value }
-
-const nextRow2 = () => { row2Index.value = (row2Index.value < maxRowIndex.value) ? row2Index.value + 1 : 0 }
-const prevRow2 = () => { row2Index.value = (row2Index.value > 0) ? row2Index.value - 1 : maxRowIndex.value }
-
 const pausedRow1 = ref(false)
 const pausedRow2 = ref(false)
+
+const scrollCarousel = (id, direction) => {
+  const el = document.getElementById(id)
+  if (!el) return
+  const firstCard = el.querySelector('[data-card]')
+  const cardW = firstCard ? firstCard.offsetWidth + 24 : el.clientWidth * 0.85
+  el.scrollBy({ left: direction === 'next' ? cardW : -cardW, behavior: 'smooth' })
+}
 
 // Auto-scroll logic
 let carouselInterval = null
 onMounted(() => {
-  window.addEventListener('resize', handleResize)
   carouselInterval = setInterval(() => {
-    if (!pausedRow1.value) nextRow1()
-    if (!pausedRow2.value) nextRow2()
-  }, 5000) // Scroll every 5 seconds
+    // Row 1 Autoplay
+    if (!pausedRow1.value) {
+      const el1 = document.getElementById('highlights-row-1')
+      if (el1) {
+        const firstCard = el1.querySelector('[data-card]')
+        const cardW = firstCard ? firstCard.offsetWidth + 24 : el1.clientWidth
+        const maxScroll = el1.scrollWidth - el1.clientWidth
+        if (el1.scrollLeft >= maxScroll - 4) {
+          el1.scrollTo({ left: 0, behavior: 'smooth' })
+        } else {
+          el1.scrollBy({ left: cardW, behavior: 'smooth' })
+        }
+      }
+    }
+    // Row 2 Autoplay
+    if (!pausedRow2.value) {
+      const el2 = document.getElementById('highlights-row-2')
+      if (el2) {
+        const firstCard = el2.querySelector('[data-card]')
+        const cardW = firstCard ? firstCard.offsetWidth + 24 : el2.clientWidth
+        const maxScroll = el2.scrollWidth - el2.clientWidth
+        if (el2.scrollLeft <= 4) {
+          el2.scrollTo({ left: maxScroll, behavior: 'smooth' })
+        } else {
+          el2.scrollBy({ left: -cardW, behavior: 'smooth' })
+        }
+      }
+    }
+  }, 5000)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('resize', handleResize)
   if (carouselInterval) clearInterval(carouselInterval)
 })
 
@@ -867,10 +873,10 @@ onUnmounted(() => {
           </div>
           
           <!-- Row 1 Arrows -->
-          <button @click="prevRow1" aria-label="Previous steaks" class="absolute -left-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row1:opacity-100 md:-translate-x-4 md:group-hover/row1:translate-x-0 overflow-visible">
+          <button @click="scrollCarousel('highlights-row-1', 'prev')" aria-label="Previous steaks" class="absolute -left-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row1:opacity-100 md:-translate-x-4 md:group-hover/row1:translate-x-0 overflow-visible">
             <span class="material-icons" aria-hidden="true">chevron_left</span>
           </button>
-          <button @click="nextRow1" aria-label="Next steaks" class="absolute -right-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row1:opacity-100 md:translate-x-4 md:group-hover/row1:translate-x-0 overflow-visible">
+          <button @click="scrollCarousel('highlights-row-1', 'next')" aria-label="Next steaks" class="absolute -right-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row1:opacity-100 md:translate-x-4 md:group-hover/row1:translate-x-0 overflow-visible">
             <span class="material-icons" aria-hidden="true">chevron_right</span>
           </button>
 
@@ -883,14 +889,14 @@ onUnmounted(() => {
             @touchend="pausedRow1 = false"
           >
             <div 
-              class="flex transition-transform duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)]"
-              :style="{ transform: `translateX(-${row1Index * cardWidthPercent}%)` }"
+              class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar px-6 sm:px-10"
               id="highlights-row-1"
             >
               <div 
                 v-for="(item, index) in signatureHighlights.slice(0, 10)" 
                 :key="item.name"
-                class="min-w-full sm:min-w-[50%] md:min-w-[33.333%] lg:min-w-[25%] px-3 animate-reveal"
+                data-card
+                class="snap-start flex-shrink-0 w-[calc(100vw-88px)] sm:w-[calc(50vw-56px)] lg:w-[calc(25vw-56px)] min-w-[240px] max-w-[340px] px-1 animate-reveal"
                 :class="{ 'active': revealedHighlights }"
                 :style="{ animationDelay: `${index * 100}ms` }"
               >
@@ -944,10 +950,10 @@ onUnmounted(() => {
           </div>
 
           <!-- Row 2 Arrows -->
-          <button @click="prevRow2" aria-label="Previous sides" class="absolute -left-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row2:opacity-100 md:-translate-x-4 md:group-hover/row2:translate-x-0 overflow-visible">
+          <button @click="scrollCarousel('highlights-row-2', 'prev')" aria-label="Previous sides" class="absolute -left-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row2:opacity-100 md:-translate-x-4 md:group-hover/row2:translate-x-0 overflow-visible">
             <span class="material-icons" aria-hidden="true">chevron_left</span>
           </button>
-          <button @click="nextRow2" aria-label="Next sides" class="absolute -right-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row2:opacity-100 md:translate-x-4 md:group-hover/row2:translate-x-0 overflow-visible">
+          <button @click="scrollCarousel('highlights-row-2', 'next')" aria-label="Next sides" class="absolute -right-2 top-1/2 -translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 bg-black/90 hover:bg-primary text-white border border-white/10 flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover/row2:opacity-100 md:translate-x-4 md:group-hover/row2:translate-x-0 overflow-visible">
             <span class="material-icons" aria-hidden="true">chevron_right</span>
           </button>
 
@@ -960,13 +966,14 @@ onUnmounted(() => {
             @touchend="pausedRow2 = false"
           >
             <div 
-              class="flex transition-transform duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)]"
-              :style="{ transform: `translateX(-${row2Index * cardWidthPercent}%)` }"
+              class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar px-6 sm:px-10"
+              id="highlights-row-2"
             >
               <div 
                 v-for="(item, index) in signatureHighlights.slice(10, 20)" 
                 :key="item.name"
-                class="min-w-full sm:min-w-[50%] md:min-w-[33.333%] lg:min-w-[25%] px-3 animate-reveal"
+                data-card
+                class="snap-start flex-shrink-0 w-[calc(100vw-88px)] sm:w-[calc(50vw-56px)] lg:w-[calc(25vw-56px)] min-w-[240px] max-w-[340px] px-1 animate-reveal"
                 :class="{ 'active': revealedHighlights }"
                 :style="{ animationDelay: `${(index + 2) * 100}ms` }"
               >
