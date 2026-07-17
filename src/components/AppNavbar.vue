@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { cart } from '../cartState'
+import { cart, selectedCurrency, exchangeRates, currencySymbols, currencyNames } from '../cartState'
 
 const router = useRouter()
 const isScrolled = ref(false)
@@ -19,12 +19,21 @@ const handleScroll = () => {
   isScrolled.value = window.scrollY > 50
 }
 
+const closeCurrencyDropdown = () => {
+  showCurrencyDropdown.value = false
+}
+
+const showCurrencyDropdown = ref(false)
+const inputAmount = ref(1000)
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
+  window.addEventListener('click', closeCurrencyDropdown)
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('click', closeCurrencyDropdown)
 })
 </script>
 
@@ -94,6 +103,72 @@ onUnmounted(() => {
                   {{ cart.length }}
                 </span>
               </router-link>
+
+              <!-- Currency Converter -->
+              <div class="relative">
+                <button 
+                  @click.stop="showCurrencyDropdown = !showCurrencyDropdown"
+                  class="group/nav-icon p-2 flex items-center justify-center cursor-pointer"
+                  aria-label="Currency converter"
+                >
+                  <span class="material-icons text-2xl md:text-3xl text-white group-hover/nav-icon:text-primary transition-colors" aria-hidden="true">currency_exchange</span>
+                </button>
+                <!-- Currency Dropdown -->
+                <Transition name="drawer">
+                  <div 
+                    v-if="showCurrencyDropdown" 
+                    class="absolute right-0 mt-3 w-80 bg-[#080808]/95 backdrop-blur-xl border border-white/10 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.9)] z-[300] text-left"
+                    @click.stop
+                  >
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+                      <span class="font-display font-black text-xs uppercase tracking-widest text-primary">Tactical Exchange</span>
+                      <span class="text-[8px] font-black uppercase text-gray-500 tracking-widest">5 CURRENCIES</span>
+                    </div>
+                    
+                    <!-- Quick Calculator -->
+                    <div class="space-y-4">
+                      <div>
+                        <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest block mb-1">Convert KSh Amount</label>
+                        <div class="relative">
+                          <input 
+                            type="number" 
+                            v-model.number="inputAmount" 
+                            class="w-full bg-black border border-white/10 focus:border-primary focus:outline-none px-3 py-2 text-xs text-white font-mono"
+                            min="0"
+                          />
+                          <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-500 font-bold">KES</span>
+                        </div>
+                      </div>
+
+                      <!-- Converted Rates List -->
+                      <div class="space-y-2 pt-2">
+                        <div 
+                          v-for="curr in Object.keys(exchangeRates)" 
+                          :key="curr" 
+                          @click="selectedCurrency = curr"
+                          class="flex justify-between items-center bg-white/[0.01] border p-2 text-xs font-mono cursor-pointer transition-all hover:bg-white/5"
+                          :class="selectedCurrency === curr ? 'border-primary/50 bg-primary/5' : 'border-white/5'"
+                        >
+                          <div class="flex items-center gap-2">
+                            <span class="text-[8px] font-black px-1.5 py-0.5 bg-primary/10 border border-primary/20"
+                                  :class="selectedCurrency === curr ? 'text-primary' : 'text-white/60'">{{ curr }}</span>
+                            <span class="text-[10px]" :class="selectedCurrency === curr ? 'text-white font-bold' : 'text-gray-400'">{{ currencyNames[curr] }}</span>
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <span class="text-white font-bold">{{ currencySymbols[curr] }}{{ (inputAmount * exchangeRates[curr]).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                            <span v-if="selectedCurrency === curr" class="material-icons text-primary text-xs">check_circle</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Rate Reference -->
+                      <div class="text-[7px] text-gray-600 font-bold uppercase tracking-widest text-center pt-2 border-t border-white/5">
+                        1 KSh = 0.0078 USD · 0.0072 EUR · 0.0061 GBP · 0.0286 AED · 0.14 ZAR
+                      </div>
+                    </div>
+                  </div>
+                </Transition>
+              </div>
 
               <!-- Profile Icon -->
               <button @click="showLoginDialog = true" class="group/nav-icon p-2" aria-label="Sign in or manage account">
@@ -463,5 +538,15 @@ onUnmounted(() => {
 }
 .mobile-menu-leave-to .relative.ml-auto {
   transform: translateX(100%);
+}
+/* Dropdown Transition */
+.drawer-enter-active,
+.drawer-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.drawer-enter-from,
+.drawer-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
 }
 </style>

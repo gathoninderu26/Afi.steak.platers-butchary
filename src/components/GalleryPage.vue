@@ -2,6 +2,10 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import AppFooter from './AppFooter.vue'
 
+// ─── Local Chronicle Assets ─────────────────────────────────────────────────
+import img45DaySecret from '../assets/chronicles/images (5).jpg'
+import imgNderuProfile from '../assets/nderu-profile.jpg'
+
 // ─── Gallery Data ───────────────────────────────────────────────────────────
 const galleryItems = ref([
   {
@@ -113,7 +117,7 @@ const blogPosts = ref([
     category: "CRAFT",
     readTime: "5 MIN READ",
     author: "MASTER BUTCHER",
-    image: "https://images.unsplash.com/photo-1550966841-3ee7adac1661?auto=format&fit=crop&w=1200&q=80"
+    image: img45DaySecret
   },
   {
     id: 2,
@@ -240,11 +244,11 @@ const testimonials = [
       image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
   },
   {
-      name: 'MBUGUA',
+      name: 'NDERU',
       role: 'Elite Member',
       text: 'Consistent quality and great ambiance. The dry-aged cuts are a revelation.',
       rating: 4,
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
+      image: imgNderuProfile
   },
   {
       name: 'SAMUEL',

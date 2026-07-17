@@ -1,7 +1,14 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import AppFooter from './AppFooter.vue'
-import { addToCart } from '../cartState'
+import { addToCart, formatPrice } from '../cartState'
+
+// ─── Local Home Assets ────────────────────────────────────────────────────────
+import imgEliteSteaks  from '../assets/Home/slide.png'
+import imgPlatters     from '../assets/Home/family-platter.jpg'
+import imgButchery     from '../assets/Home/images (4).jpg'
+import imgRawPrecision from '../assets/our ritual/images (4).jpg'
+import imgNderuProfile from '../assets/nderu-profile.jpg'
 
 // ─── Daily Specials Data ───────────────────────────────────────────────────────
 const specials = [
@@ -236,11 +243,11 @@ const testimonials = [
       image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'
   },
   {
-      name: 'MBUGUA',
+      name: 'NDERU',
       role: 'Elite Member',
       text: 'Quality and ritual combined. A must visit for every steak lover.',
       rating: 4,
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80'
+      image: imgNderuProfile
   },
   {
       name: 'SAMUEL',
@@ -325,27 +332,32 @@ const savageServices = [
         title: "Savage Extraction", 
         desc: "City-wide synchronized fulfillment within 45 fragments. Logistics mapped for zero-friction urban delivery.", 
         icon: "local_shipping", 
-        image: "https://images.unsplash.com/photo-1512412023979-5df16316aa11?auto=format&fit=crop&w=600&q=80" 
+        // Premium meat delivery — insulated cooler, fresh cuts, urban logistics
+        image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=1200&q=80" 
     },
     { 
         title: "Ritual Scaling", 
         desc: "Full-scale smoky deployments for corporate or private sectors. Tactical catering engineered for mass impact.", 
         icon: "groups", 
-        image: "https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=600&q=80" 
+        // Large-scale outdoor BBQ feast — communal catering, event mass impact
+        image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=1200&q=80" 
     },
     { 
         title: "Yield Engineering", 
         desc: "Custom dry-aged yields tailored to your exact thermal requirements. Precision butchery protocols.", 
         icon: "precision_manufacturing", 
-        image: "https://images.unsplash.com/photo-1606416132922-22ab37c1231e?auto=format&fit=crop&w=600&q=80" 
+        // Butcher hand-slicing dry-aged beef on block — precision craft
+        image: "https://images.unsplash.com/photo-1594041680534-e8c8cdebd659?auto=format&fit=crop&w=1200&q=80" 
     },
     { 
         title: "Mastery Training", 
         desc: "Learn the ancient fire rituals from the masters of the pit. Join the smokehouse elite in private sessions.", 
         icon: "workspace_premium", 
-        image: "https://images.unsplash.com/photo-1544023109-173c62ba81b9?auto=format&fit=crop&w=600&q=80" 
+        // Pitmaster over open-flame grill — fire, smoke, mastery
+        image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80" 
     }
 ]
+
 
 const specialtyCategories = [
   {
@@ -354,7 +366,7 @@ const specialtyCategories = [
     subtitle: 'Dry-Aged Precision',
     description: 'Our steaks are monitored 24/7 in salt-brick vaults, ensuring a yield of unparalleled flavor and tenderness.',
     icon: 'kebab_dining',
-    image: 'https://images.unsplash.com/photo-1546241072-48010ad28c2c?auto=format&fit=crop&w=1200&q=80',
+    image: imgEliteSteaks,
     items: ['45-Day Tomahawk', 'A5 Wagyu Strip', 'Savage T-Bone']
   },
   {
@@ -363,7 +375,7 @@ const specialtyCategories = [
     subtitle: 'Mass Impact Feasts',
     description: 'Engineered for the tribe. These massive deployments feature a synchronized selection of our finest yields.',
     icon: 'layers',
-    image: 'https://images.unsplash.com/photo-1603360946369-dc9bb2258139?auto=format&fit=crop&w=1200&q=80',
+    image: imgPlatters,
     items: ["The King's Platter", 'Savage Roast Feast', 'Tribal BBQ Tray']
   },
   {
@@ -372,7 +384,7 @@ const specialtyCategories = [
     subtitle: 'The Source of Power',
     description: 'Raw yields available for private extraction. Take the ritual home with our premium, hand-carved cuts.',
     icon: 'content_cut',
-    image: 'https://images.unsplash.com/photo-1606416132922-22ab37c1231e?auto=format&fit=crop&w=1200&q=80',
+    image: imgButchery,
     items: ['Custom Dry-Aged Ribeye', 'Signature Rub Packs', 'Whole Lamb Extraction']
   }
 ]
@@ -917,7 +929,7 @@ onUnmounted(() => {
                       <span class="text-white text-[10px] font-bold tracking-widest">{{ item.rating }}</span>
                     </div>
                     <div class="absolute bottom-5 left-5">
-                       <span class="text-primary font-display text-base font-bold tracking-widest bg-black px-2 py-0.5">KSh {{ item.price }}</span>
+                       <span class="text-primary font-display text-base font-bold tracking-widest bg-black px-2 py-0.5">{{ formatPrice(item.price) }}</span>
                     </div>
                   </div>
                   <div class="p-5">
@@ -994,7 +1006,7 @@ onUnmounted(() => {
                       <span class="text-white text-[10px] font-bold tracking-widest">{{ item.rating }}</span>
                     </div>
                     <div class="absolute bottom-5 left-5">
-                       <span class="text-primary font-display text-base font-bold tracking-widest bg-black px-2 py-0.5">KSh {{ item.price }}</span>
+                       <span class="text-primary font-display text-base font-bold tracking-widest bg-black px-2 py-0.5">{{ formatPrice(item.price) }}</span>
                     </div>
                   </div>
                   <div class="p-5">
@@ -1040,7 +1052,7 @@ onUnmounted(() => {
                 </h2>
                 
                 <div class="flex items-center gap-6 mb-8">
-                  <span class="text-4xl md:text-5xl font-display font-bold text-primary">KSh {{ selectedHighlight.price }}</span>
+                  <span class="text-4xl md:text-5xl font-display font-bold text-primary">{{ formatPrice(selectedHighlight.price) }}</span>
                   <div class="h-10 w-[1px] bg-white/10"></div>
                   <div class="flex items-center gap-2">
                      <span class="material-icons text-yellow-500">star</span>
@@ -1331,7 +1343,7 @@ onUnmounted(() => {
                 <!-- Section 2: Raw Precision -->
                 <section class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700">
                     <div class="relative aspect-[16/10] overflow-hidden group">
-                        <img src="https://images.unsplash.com/photo-1546241072-48010ad28c2c?auto=format&fit=crop&w=1200&q=80" 
+                        <img :src="imgRawPrecision" alt="Raw Precision — AFI hand-seared steak bites" 
                              class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110">
                         <div class="absolute inset-0 border border-white/10 group-hover:border-primary/50 transition-colors m-4"></div>
                     </div>

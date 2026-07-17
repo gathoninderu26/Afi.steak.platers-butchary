@@ -1,7 +1,8 @@
 <script setup>
 import { ref, reactive, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import AppFooter from './AppFooter.vue'
-import { cart, addToCart } from '../cartState'
+import { cart, addToCart, formatPrice } from '../cartState'
+import imgNderuProfile from '../assets/nderu-profile.jpg'
 
 // ─── State Management ────────────────────────────────────────────────────────
 const menuMode = ref('dine') // 'dine' or 'butchery'
@@ -594,11 +595,11 @@ const testimonials = [
       image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
   },
   {
-      name: 'MBUGUA',
+      name: 'NDERU',
       role: 'Elite Member',
       text: 'Consistent quality and great ambiance. The dry-aged cuts are a revelation.',
       rating: 4,
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
+      image: imgNderuProfile
   },
   {
       name: 'SAMUEL',
@@ -1050,7 +1051,7 @@ onUnmounted(() => {
                                   <span class="text-white text-[8px] font-black uppercase tracking-[0.2em]">{{ item.tag }}</span>
                                 </div>
                                 <div class="absolute bottom-4 left-4">
-                                   <span class="text-primary font-display text-lg font-bold tracking-widest bg-black px-3 py-1 border border-white/10">KSh {{ item.price.toLocaleString() }}</span>
+                                   <span class="text-primary font-display text-lg font-bold tracking-widest bg-black px-3 py-1 border border-white/10">{{ formatPrice(item.price) }}</span>
                                 </div>
                             </div>
 
@@ -1103,7 +1104,7 @@ onUnmounted(() => {
                     <h2 class="font-display text-4xl md:text-6xl text-white font-bold uppercase tracking-tighter mb-6">{{ showItemDetail.name }}</h2>
                     
                     <div class="flex items-center gap-6 mb-10">
-                        <span class="text-5xl font-display font-bold text-primary">KSh {{ showItemDetail.price.toLocaleString() }}</span>
+                        <span class="text-5xl font-display font-bold text-primary">{{ formatPrice(showItemDetail.price) }}</span>
                         <div class="h-10 w-[1px] bg-white/10"></div>
                         <div class="flex items-center gap-2">
                            <span class="material-icons text-yellow-500">star</span>

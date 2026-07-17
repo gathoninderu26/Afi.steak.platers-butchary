@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { cart, cartTotal, removeFromCart, addToCart } from '../cartState'
+import { cart, cartTotal, removeFromCart, addToCart, formatPrice } from '../cartState'
 import AppFooter from './AppFooter.vue'
 
 const router = useRouter()
@@ -97,7 +97,7 @@ const removeItem = (item) => {
                                 <!-- Pricing -->
                                 <div class="flex flex-col">
                                     <span class="text-[8px] font-black text-gray-600 uppercase tracking-widest mb-1">Unit Fragment Cost</span>
-                                    <span class="text-primary font-display font-bold text-2xl">KSh {{ (item.price * item.quantity).toLocaleString() }}</span>
+                                    <span class="text-primary font-display font-bold text-2xl">{{ formatPrice(item.price * item.quantity) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -123,7 +123,7 @@ const removeItem = (item) => {
                                 <div class="text-left">
                                     <p class="text-[11px] font-black text-white uppercase mb-1 tracking-widest">Volcanic Salts</p>
                                     <p class="text-gray-500 text-[9px] uppercase font-bold mb-2">Enhance sear depth</p>
-                                    <p class="text-primary font-display font-bold text-lg leading-none">+ KSh 350</p>
+                                    <p class="text-primary font-display font-bold text-lg leading-none">+ {{ formatPrice(350) }}</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-6 p-6 border border-white/10 hover:border-primary/40 transition-all cursor-pointer bg-black/60 group/rec shadow-xl">
@@ -133,7 +133,7 @@ const removeItem = (item) => {
                                 <div class="text-left">
                                     <p class="text-[11px] font-black text-white uppercase mb-1 tracking-widest">AFI Resin Glaze</p>
                                     <p class="text-gray-500 text-[9px] uppercase font-bold mb-2">Maximum gloss yields</p>
-                                    <p class="text-primary font-display font-bold text-lg leading-none">+ KSh 500</p>
+                                    <p class="text-primary font-display font-bold text-lg leading-none">+ {{ formatPrice(500) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -152,20 +152,20 @@ const removeItem = (item) => {
                     <div class="space-y-6 mb-12">
                         <div class="flex justify-between items-center text-[11px] font-black uppercase text-gray-500 tracking-[0.2em]">
                             <span>Subtotal</span>
-                            <span class="text-white">KSh {{ cartTotal.toLocaleString() }}</span>
+                            <span class="text-white">{{ formatPrice(cartTotal) }}</span>
                         </div>
                         <div class="flex justify-between items-center text-[11px] font-black uppercase text-gray-500 tracking-[0.2em]">
                             <span>Tactical Tax (16%)</span>
-                            <span class="text-white">KSh {{ (cartTotal * 0.16).toLocaleString() }}</span>
+                            <span class="text-white">{{ formatPrice(cartTotal * 0.16) }}</span>
                         </div>
                         <div class="flex justify-between items-center text-[11px] font-black uppercase text-gray-500 tracking-[0.2em]">
                             <span>Extraction Service</span>
-                            <span class="text-white">KSh 450</span>
+                            <span class="text-white">{{ formatPrice(450) }}</span>
                         </div>
                         <div class="pt-8 mt-4 border-t border-white/10 flex justify-between items-end">
                             <span class="font-display font-black text-white uppercase tracking-widest text-lg">Total Payload</span>
                             <div class="text-right">
-                                <span class="text-primary font-display font-black text-5xl italic drop-shadow-[0_0_15px_rgba(217,4,4,0.4)] block">KSh {{ (cartTotal * 1.16 + 450).toLocaleString() }}</span>
+                                <span class="text-primary font-display font-black text-5xl italic drop-shadow-[0_0_15px_rgba(217,4,4,0.4)] block">{{ formatPrice(cartTotal * 1.16 + 450) }}</span>
                             </div>
                         </div>
                     </div>

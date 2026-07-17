@@ -2,6 +2,8 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AppFooter from './AppFooter.vue'
+import { selectedCurrency, exchangeRates, currencySymbols, currencyNames, formatPrice } from '../cartState'
+import imgNderuProfile from '../assets/nderu-profile.jpg'
 
 const router = useRouter()
 
@@ -14,6 +16,9 @@ const mobileMenuOpen = ref(false)
 
 const showNotificationsDropdown = ref(false)
 const showCartDropdown = ref(false)
+const showCurrencyDropdown = ref(false)
+const inputAmount = ref(1000)
+
 const notifications = ref([
     { id: 1, text: "Tactical Sear Protocol updated at Westlands Base.", time: "10m ago", read: false },
     { id: 2, text: "A5 Wagyu reserves are running low in Kikuyu sector.", time: "1h ago", read: false },
@@ -23,6 +28,7 @@ const notifications = ref([
 const closeDropdowns = () => {
     showNotificationsDropdown.value = false
     showCartDropdown.value = false
+    showCurrencyDropdown.value = false
 }
 
 const currentDay = computed(() => {
@@ -57,7 +63,7 @@ const mealOfTheDay = {
 const topSavages = [
     { name: "General Meat", score: "45,200", rank: 1 },
     { name: "Sizzle King", score: "38,900", rank: 2 },
-    { name: "Mbugua AFI", score: "12,500", rank: 3 }
+    { name: "Nderu AFI", score: "12,500", rank: 3 }
 ]
 
 const operationalAds = [
@@ -601,18 +607,74 @@ onUnmounted(() => {
             <!-- User Tactical Profile -->
             <div class="hidden xl:flex items-center gap-4 px-6 border-l border-white/10">
                 <div class="relative">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80" 
+                    <img :src="imgNderuProfile" 
                          class="w-10 h-10 rounded-full object-cover grayscale border border-primary/40">
                     <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-black animate-pulse"></div>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-[10px] font-display font-black text-white uppercase leading-none mb-1">Mbugua <span class="text-primary">AFI</span></span>
+                    <span class="text-[10px] font-display font-black text-white uppercase leading-none mb-1">Nderu <span class="text-primary">AFI</span></span>
                     <span class="text-[8px] font-black text-primary uppercase tracking-[0.2em] leading-none">Level 04 • Ritualist</span>
                 </div>
             </div>
 
             <!-- Tactical Actions -->
             <div class="flex items-center gap-3">
+                <!-- Currency Converter -->
+                <div class="relative">
+                    <button @click.stop="showCurrencyDropdown = !showCurrencyDropdown; showNotificationsDropdown = false; showCartDropdown = false"
+                            class="relative w-10 h-10 flex items-center justify-center bg-white/5 border border-white/10 hover:border-primary/50 transition-all group"
+                            aria-label="Currency Converter">
+                        <span class="material-icons text-white/50 group-hover:text-primary transition-colors text-xl">currency_exchange</span>
+                    </button>
+                    <!-- Currency Dropdown -->
+                    <Transition name="drawer">
+                        <div v-if="showCurrencyDropdown" 
+                             class="fixed sm:absolute top-auto sm:right-0 left-3 right-3 sm:left-auto sm:w-80 mt-3 bg-[#080808] border border-white/10 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.9)] z-[300] text-left"
+                             @click.stop>
+                            <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+                                <span class="font-display font-black text-xs uppercase tracking-widest text-primary">Tactical Exchange</span>
+                                <span class="text-[8px] font-black uppercase text-gray-500 tracking-widest">5 CURRENCIES</span>
+                            </div>
+                            
+                            <!-- Quick Calculator -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest block mb-1">Convert KSh Amount</label>
+                                    <div class="relative">
+                                        <input type="number" v-model.number="inputAmount" 
+                                               class="w-full bg-black border border-white/10 focus:border-primary focus:outline-none px-3 py-2 text-xs text-white font-mono"
+                                               min="0" />
+                                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-500 font-bold">KES</span>
+                                    </div>
+                                </div>
+
+                                <!-- Converted Rates List -->
+                                <div class="space-y-2 pt-2">
+                                    <div v-for="curr in Object.keys(exchangeRates)" :key="curr" 
+                                         @click="selectedCurrency = curr"
+                                         class="flex justify-between items-center bg-white/[0.01] border p-2 text-xs font-mono cursor-pointer transition-all hover:bg-white/5"
+                                         :class="selectedCurrency === curr ? 'border-primary/50 bg-primary/5' : 'border-white/5'">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-[8px] font-black px-1.5 py-0.5 bg-primary/10 border border-primary/20"
+                                                  :class="selectedCurrency === curr ? 'text-primary' : 'text-white/60'">{{ curr }}</span>
+                                            <span class="text-[10px]" :class="selectedCurrency === curr ? 'text-white font-bold' : 'text-gray-400'">{{ currencyNames[curr] }}</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-white font-bold">{{ currencySymbols[curr] }}{{ (inputAmount * exchangeRates[curr]).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                                            <span v-if="selectedCurrency === curr" class="material-icons text-primary text-xs">check_circle</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Rate Reference -->
+                                <div class="text-[7px] text-gray-600 font-bold uppercase tracking-widest text-center pt-2 border-t border-white/5">
+                                    1 KSh = 0.0078 USD · 0.0072 EUR · 0.0061 GBP · 0.0286 AED · 0.14 ZAR
+                                </div>
+                            </div>
+                        </div>
+                    </Transition>
+                </div>
+
                 <!-- Notifications -->
                 <div class="relative">
                     <button @click.stop="showNotificationsDropdown = !showNotificationsDropdown; showCartDropdown = false"
@@ -665,7 +727,7 @@ onUnmounted(() => {
                                     <img :src="item.image" class="w-12 h-12 object-cover grayscale" />
                                     <div class="flex-1 min-w-0">
                                         <h5 class="text-[10px] font-bold text-white uppercase truncate">{{ item.name }}</h5>
-                                        <span class="text-[9px] text-primary font-bold">KSh {{ item.price.toLocaleString() }} x {{ item.qty }}</span>
+                                        <span class="text-[9px] text-primary font-bold">{{ formatPrice(item.price) }} x {{ item.qty }}</span>
                                     </div>
                                     <button @click="cartItems = cartItems.filter(i => i.id !== item.id)" class="text-gray-600 hover:text-primary">
                                         <span class="material-icons text-base">delete</span>
@@ -675,7 +737,7 @@ onUnmounted(() => {
                             <div v-if="cartItems.length > 0" class="border-t border-white/10 pt-4 mt-4 space-y-4">
                                 <div class="flex justify-between text-xs">
                                     <span class="text-gray-500 font-black uppercase tracking-widest">Est. Subtotal</span>
-                                    <span class="text-white font-bold">KSh {{ cartTotal.toLocaleString() }}</span>
+                                    <span class="text-white font-bold">{{ formatPrice(cartTotal) }}</span>
                                 </div>
                                 <button @click="activeTab = 'rituals'; showCartDropdown = false" 
                                         class="w-full py-3 bg-primary text-white font-display text-[9px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center justify-center gap-2">
@@ -882,11 +944,11 @@ onUnmounted(() => {
                         <div class="flex flex-col md:flex-row items-center gap-10 bg-white/[0.02] border border-white/5 p-10 lg:p-14">
                             <div class="relative">
                                 <div class="absolute inset-0 bg-primary/20 rounded-full blur-2xl animate-pulse"></div>
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80" 
+                                <img :src="imgNderuProfile" 
                                      class="relative w-32 h-32 rounded-full object-cover grayscale border-2 border-primary/20 ring-4 ring-black">
                             </div>
                             <div class="text-center md:text-left flex-1">
-                                <h1 class="font-display text-5xl lg:text-7xl font-black uppercase text-white leading-none mb-3">Mbugua <span class="text-primary italic">AFI</span></h1>
+                                <h1 class="font-display text-5xl lg:text-7xl font-black uppercase text-white leading-none mb-3">Nderu <span class="text-primary italic">AFI</span></h1>
                                 <div class="flex flex-wrap items-center justify-center md:justify-start gap-4">
                                     <span class="px-3 py-1 bg-primary text-white text-[8px] font-black uppercase tracking-widest">{{ userRank }}</span>
                                     <span class="px-3 py-1 bg-white/5 text-gray-500 text-[8px] font-black uppercase tracking-widest border border-white/10">ID: {{ memberId }}</span>
@@ -1128,7 +1190,7 @@ onUnmounted(() => {
                             </div>
                             <div class="absolute bottom-5 left-5">
                                <span class="text-primary font-display text-base font-bold tracking-widest bg-black px-2 py-0.5">
-                                   KSh {{ item.price }} {{ item.unit ? '/ ' + item.unit : '' }}
+                                   {{ formatPrice(item.price) }}{{ item.unit ? ' / ' + item.unit : '' }}
                                </span>
                             </div>
                         </div>
@@ -1188,7 +1250,7 @@ onUnmounted(() => {
                                             <span class="text-white text-[10px] font-bold tracking-widest">{{ item.rating || 4.9 }}</span>
                                         </div>
                                         <div class="absolute bottom-5 left-5">
-                                           <span class="text-primary font-display text-base font-bold tracking-widest bg-black px-2 py-0.5">KSh {{ item.price }} {{ item.unit ? '/ ' + item.unit : '' }}</span>
+                                           <span class="text-primary font-display text-base font-bold tracking-widest bg-black px-2 py-0.5">{{ formatPrice(item.price) }}{{ item.unit ? ' / ' + item.unit : '' }}</span>
                                         </div>
                                     </div>
                                     <div class="p-5 text-left">
@@ -1235,7 +1297,7 @@ onUnmounted(() => {
                                             <span class="text-white text-[10px] font-bold tracking-widest">{{ item.rating || 4.9 }}</span>
                                         </div>
                                         <div class="absolute bottom-5 left-5">
-                                           <span class="text-primary font-display text-base font-bold tracking-widest bg-black px-2 py-0.5">KSh {{ item.price }} {{ item.unit ? '/ ' + item.unit : '' }}</span>
+                                           <span class="text-primary font-display text-base font-bold tracking-widest bg-black px-2 py-0.5">{{ formatPrice(item.price) }}{{ item.unit ? ' / ' + item.unit : '' }}</span>
                                         </div>
                                     </div>
                                     <div class="p-5 text-left">
@@ -1747,7 +1809,7 @@ onUnmounted(() => {
                                         <span class="w-10 text-center font-display font-black text-xs">{{ item.qty }}</span>
                                         <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white">+</button>
                                     </div>
-                                    <span class="text-primary font-display font-bold text-lg">KSh {{ (item.price * item.qty).toLocaleString() }}</span>
+                                    <span class="text-primary font-display font-bold text-lg">{{ formatPrice(item.price * item.qty) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -1765,7 +1827,7 @@ onUnmounted(() => {
                                     </div>
                                     <div>
                                         <p class="text-[10px] font-black text-white uppercase mb-1">Volcanic Salts</p>
-                                        <p class="text-primary font-display font-bold text-xs uppercase">+ KSh 350</p>
+                                        <p class="text-primary font-display font-bold text-xs uppercase">+ {{ formatPrice(350) }}</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-4 p-4 border border-white/5 hover:border-primary/20 transition-all cursor-pointer bg-black">
@@ -1774,7 +1836,7 @@ onUnmounted(() => {
                                     </div>
                                     <div>
                                         <p class="text-[10px] font-black text-white uppercase mb-1">AFI Resin Glaze</p>
-                                        <p class="text-primary font-display font-bold text-xs uppercase">+ KSh 500</p>
+                                        <p class="text-primary font-display font-bold text-xs uppercase">+ {{ formatPrice(500) }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -1788,19 +1850,19 @@ onUnmounted(() => {
                             <div class="space-y-4 mb-10">
                                 <div class="flex justify-between items-center text-[10px] font-black uppercase text-gray-500 tracking-widest">
                                     <span>Subtotal</span>
-                                    <span class="text-white">KSh {{ cartTotal.toLocaleString() }}</span>
+                                    <span class="text-white">{{ formatPrice(cartTotal) }}</span>
                                 </div>
                                 <div class="flex justify-between items-center text-[10px] font-black uppercase text-gray-500 tracking-widest">
                                     <span>Tactical Tax (16%)</span>
-                                    <span class="text-white">KSh {{ (cartTotal * 0.16).toLocaleString() }}</span>
+                                    <span class="text-white">{{ formatPrice(cartTotal * 0.16) }}</span>
                                 </div>
                                 <div class="flex justify-between items-center text-[10px] font-black uppercase text-gray-500 tracking-widest">
                                     <span>Service Courier</span>
-                                    <span class="text-white">KSh 450</span>
+                                    <span class="text-white">{{ formatPrice(450) }}</span>
                                 </div>
                                 <div class="pt-4 border-t border-white/10 flex justify-between items-center">
                                     <span class="font-display font-black text-white uppercase tracking-wider">Total Payload</span>
-                                    <span class="text-primary font-display font-black text-3xl italic">KSh {{ (cartTotal * 1.16 + 450).toLocaleString() }}</span>
+                                    <span class="text-primary font-display font-black text-3xl italic">{{ formatPrice(cartTotal * 1.16 + 450) }}</span>
                                 </div>
                             </div>
                             
@@ -1936,7 +1998,7 @@ onUnmounted(() => {
                 </h2>
                 
                 <div class="flex items-center gap-6 mb-8">
-                  <span class="text-4xl md:text-5xl font-display font-bold text-primary">KSh {{ selectedHighlight.price }}</span>
+                  <span class="text-4xl md:text-5xl font-display font-bold text-primary">{{ formatPrice(selectedHighlight.price) }}</span>
                   <div class="h-10 w-[1px] bg-white/10"></div>
                   <div class="flex items-center gap-2">
                      <span class="material-icons text-yellow-500">star</span>
