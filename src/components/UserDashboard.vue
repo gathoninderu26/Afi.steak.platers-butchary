@@ -1054,28 +1054,6 @@ onUnmounted(() => {
                             </div>
                         </div>
 
-                        <!-- Mobile/Tablet Responsive Ads Carousel -->
-                        <div class="xl:hidden relative">
-                            <div 
-                              class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide px-1 carousel-track"
-                              id="mobile-intelligence-ads"
-                            >
-                                <div v-for="ad in intelligenceAds" :key="ad.title"
-                                     data-card
-                                     class="snap-start flex-shrink-0 w-[calc(100vw-48px)] h-[250px] relative overflow-hidden border border-primary/10">
-                                    <img :src="ad.image" class="w-full h-full object-cover grayscale brightness-50">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
-                                    <div class="absolute bottom-6 left-6 right-6 text-left">
-                                        <span class="text-primary font-display font-black text-[8px] uppercase tracking-widest mb-1.5 block">EQUIPMENT DROP</span>
-                                        <h4 class="font-display text-xl font-black text-white uppercase mb-2">{{ ad.title }}</h4>
-                                        <p class="text-[9px] text-gray-300 font-light mb-4 opacity-80 line-clamp-2 leading-relaxed">{{ ad.desc }}</p>
-                                        <button class="px-5 py-2 bg-white/10 backdrop-blur-md border border-white/10 text-white font-display text-[9px] font-black uppercase tracking-widest">
-                                            {{ ad.cta }}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- Savage Briefs -->
                         <div class="p-10 bg-white/[0.02] border border-white/5 space-y-10">
