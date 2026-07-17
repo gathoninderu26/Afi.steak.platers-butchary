@@ -5,7 +5,6 @@ import AppFooter from './AppFooter.vue'
 // ─── State & Logic ───────────────────────────────────────────────────────────
 const scrollProgress = ref(0)
 const showScrollTop = ref(false)
-const bubbleVisible = ref(false)
 
 const handleScroll = () => {
   const winScroll = window.pageYOffset || document.documentElement.scrollTop
@@ -18,23 +17,13 @@ const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-const toggleBubble = (e) => {
-  e.stopPropagation()
-  bubbleVisible.value = !bubbleVisible.value
-}
-
-const closeBubble = () => {
-  bubbleVisible.value = false
-}
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
-  window.addEventListener('click', closeBubble)
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
-  window.removeEventListener('click', closeBubble)
 })
 
 // ─── FAQ Data ────────────────────────────────────────────────────────────────
@@ -77,80 +66,6 @@ const faqs = [
       <span class="material-icons group-hover:-translate-y-1 transition-transform font-bold">north</span>
     </button>
 
-    <!-- Brand Info Bubble (Mobile) -->
-    <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[150] flex flex-col items-center lg:hidden">
-      <Transition name="bubble">
-        <div 
-          v-if="bubbleVisible"
-          class="mb-6 bg-black/95 backdrop-blur-xl border border-primary/40 p-6 rounded-3xl shadow-[0_0_50px_rgba(217,4,4,0.3)] w-[320px] max-w-[calc(100vw-40px)] relative"
-          @click.stop
-        >
-          <div class="space-y-5">
-            <!-- Location -->
-            <div class="flex items-start gap-4 group/item text-left">
-              <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <span class="material-icons text-primary">location_on</span>
-              </div>
-              <div>
-                <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] text-primary mb-1">Our Location</h4>
-                <p class="text-sm text-white font-medium">Main Southern Bypass Road</p>
-                <p class="text-xs text-gray-400">Kikuyu, Kiambu County</p>
-              </div>
-            </div>
-
-            <!-- Hours -->
-            <div class="flex items-start gap-4 group/item text-left">
-              <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <span class="material-icons text-primary">schedule</span>
-              </div>
-              <div class="flex-1">
-                <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] text-primary mb-1">Opening Hours</h4>
-                <div class="space-y-1">
-                  <div class="flex justify-between text-xs">
-                    <span class="text-gray-400">Mon - Thu</span>
-                    <span class="text-white font-medium">5:00 - 10:00 PM</span>
-                  </div>
-                  <div class="flex justify-between text-xs">
-                    <span class="text-gray-400">Fri - Sat</span>
-                    <span class="text-white font-medium">5:00 - 11:00 PM</span>
-                  </div>
-                  <div class="flex justify-between text-xs">
-                    <span class="text-gray-400">Sunday</span>
-                    <span class="text-white font-medium">4:00 - 9:30 PM</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Contact -->
-            <div class="flex items-start gap-4 group/item text-left">
-              <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <span class="material-icons text-primary">contact_support</span>
-              </div>
-              <div>
-                <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] text-primary mb-1">Get In Touch</h4>
-                <p class="text-sm text-white font-medium line-clamp-1">+254 700 000 000</p>
-                <p class="text-xs text-gray-400 line-clamp-1">reservations@afikenya.com</p>
-              </div>
-            </div>
-          </div>
-          <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-black/95 rotate-45 border-r border-b border-primary/40"></div>
-        </div>
-      </Transition>
-
-      <button 
-        @click="toggleBubble"
-        class="bg-primary hover:bg-red-700 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-[0_5px_20px_rgba(217,4,4,0.3)] transition-all duration-300 hover:scale-110 active:scale-95 group relative"
-      >
-        <div class="flex items-end leading-none">
-          <span class="font-display font-bold text-lg tracking-tighter text-white">AF</span>
-          <div class="relative">
-            <span class="font-display font-bold text-lg tracking-tighter text-white">I</span>
-            <span class="absolute -top-0.5 left-0 w-full h-1 bg-white rounded-sm"></span>
-          </div>
-        </div>
-      </button>
-    </div>
 
     <!-- Main Content -->
     <main class="flex-grow relative">

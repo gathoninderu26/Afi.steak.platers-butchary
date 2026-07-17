@@ -199,7 +199,6 @@ function onLetterAnimEnd(letter) {
 // Blog Post State
 const selectedPost = ref(null)
 const postModalOpen = ref(false)
-const bubbleVisible = ref(false)
 
 const branchDetails = [
   {
@@ -714,43 +713,7 @@ onUnmounted(() => {
       </section>
     </main>
 
-    <!-- Brand Info Bubble (Mobile) -->
-    <div class="fixed bottom-12 left-1/2 -translate-x-1/2 z-[100] lg:hidden">
-      <Transition name="fade">
-        <div v-if="bubbleVisible" class="mb-12 bg-black/98 backdrop-blur-3xl border border-primary/40 p-16 rounded-[4.5rem] shadow-[0_0_120px_rgba(217,4,4,0.7)] w-[380px] animate-slide-up">
-          <div class="space-y-12 text-center flex flex-col items-center">
-            <div class="flex flex-col items-center gap-6">
-              <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary shadow-[0_0_40px_rgba(217,4,4,0.4)]">
-                <span class="material-icons text-3xl">location_on</span>
-              </div>
-              <div>
-                <p class="text-[12px] font-black uppercase tracking-[0.5em] text-primary mb-3">COMMAND HQ</p>
-                <p class="text-xl text-white font-bold leading-tight">Southern Bypass Road<br/><span class="text-base font-medium opacity-60">Kikuyu, Kiambu</span></p>
-              </div>
-            </div>
-            <div class="flex flex-col items-center gap-6">
-              <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary shadow-[0_0_40px_rgba(217,4,4,0.4)]">
-                <span class="material-icons text-3xl">schedule</span>
-              </div>
-              <div class="w-full">
-                <p class="text-[12px] font-black uppercase tracking-[0.5em] text-primary mb-4">Ritual Hours</p>
-                <div class="space-y-3 text-base font-bold">
-                   <div class="flex justify-between border-b border-white/5 pb-2"><span class="text-gray-500 font-black">WEEKDAYS</span><span class="text-white">5:00 - 10:30 PM</span></div>
-                   <div class="flex justify-between border-b border-white/5 pb-2"><span class="text-gray-500 font-black">WEEKENDS</span><span class="text-white">4:00 - 11:30 PM</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="absolute -bottom-5 left-1/2 -translate-x-1/2 w-12 h-12 bg-black/98 rotate-45 border-r border-b border-primary/40"></div>
-        </div>
-      </Transition>
-      <button 
-        @click="bubbleVisible = !bubbleVisible" 
-        class="bg-primary w-24 h-24 rounded-full flex items-center justify-center text-white shadow-[0_20px_60px_rgba(217,4,4,0.7)] transition-all active:scale-90 hover:scale-110"
-      >
-        <span class="font-display font-black text-3xl tracking-tighter">AF</span>
-      </button>
-    </div>
+
 
     <!-- Locations Section Start -->
     <header class="relative bg-black py-24 overflow-hidden border-t border-white/5 reveal-up" id="locations">
