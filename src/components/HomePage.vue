@@ -413,22 +413,45 @@ const revealedHighlights = ref(false)
 const revealedWhyChooseUs = ref(false)
 const revealedSignatureDish = ref(false)
 
-const nextRow1 = () => { row1Index.value = (row1Index.value < 5) ? row1Index.value + 1 : 0 }
-const prevRow1 = () => { row1Index.value = (row1Index.value > 0) ? row1Index.value - 1 : 5 }
+// Responsive carousel calculations
+const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1200)
+const handleResize = () => {
+  windowWidth.value = window.innerWidth
+}
 
-const nextRow2 = () => { row2Index.value = (row2Index.value < 5) ? row2Index.value + 1 : 0 }
-const prevRow2 = () => { row2Index.value = (row2Index.value > 0) ? row2Index.value - 1 : 5 }
+const cardWidthPercent = computed(() => {
+  if (windowWidth.value >= 1024) return 25      // lg: 4 cards visible
+  if (windowWidth.value >= 768) return 33.3333   // md: 3 cards visible
+  if (windowWidth.value >= 640) return 50        // sm: 2 cards visible
+  return 100                                     // xs/mobile: 1 card visible
+})
+
+const maxRowIndex = computed(() => {
+  const visibleCards = windowWidth.value >= 1024 ? 4 : (windowWidth.value >= 768 ? 3 : (windowWidth.value >= 640 ? 2 : 1))
+  return 10 - visibleCards // 10 items in each slice
+})
+
+const nextRow1 = () => { row1Index.value = (row1Index.value < maxRowIndex.value) ? row1Index.value + 1 : 0 }
+const prevRow1 = () => { row1Index.value = (row1Index.value > 0) ? row1Index.value - 1 : maxRowIndex.value }
+
+const nextRow2 = () => { row2Index.value = (row2Index.value < maxRowIndex.value) ? row2Index.value + 1 : 0 }
+const prevRow2 = () => { row2Index.value = (row2Index.value > 0) ? row2Index.value - 1 : maxRowIndex.value }
+
+const pausedRow1 = ref(false)
+const pausedRow2 = ref(false)
 
 // Auto-scroll logic
 let carouselInterval = null
 onMounted(() => {
+  window.addEventListener('resize', handleResize)
   carouselInterval = setInterval(() => {
-    nextRow1()
-    nextRow2()
+    if (!pausedRow1.value) nextRow1()
+    if (!pausedRow2.value) nextRow2()
   }, 5000) // Scroll every 5 seconds
 })
 
 onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
   if (carouselInterval) clearInterval(carouselInterval)
 })
 
@@ -852,10 +875,16 @@ onUnmounted(() => {
           </button>
 
           <!-- Row 1: Signature Steaks & Platters -->
-          <div class="overflow-hidden">
+          <div 
+            class="overflow-hidden"
+            @mouseenter="pausedRow1 = true"
+            @mouseleave="pausedRow1 = false"
+            @touchstart="pausedRow1 = true"
+            @touchend="pausedRow1 = false"
+          >
             <div 
               class="flex transition-transform duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)]"
-              :style="{ transform: `translateX(-${row1Index * 25}%)` }"
+              :style="{ transform: `translateX(-${row1Index * cardWidthPercent}%)` }"
               id="highlights-row-1"
             >
               <div 
@@ -923,10 +952,16 @@ onUnmounted(() => {
           </button>
 
           <!-- Row 2: Gourmet Sides & Desserts -->
-          <div class="overflow-hidden">
+          <div 
+            class="overflow-hidden"
+            @mouseenter="pausedRow2 = true"
+            @mouseleave="pausedRow2 = false"
+            @touchstart="pausedRow2 = true"
+            @touchend="pausedRow2 = false"
+          >
             <div 
               class="flex transition-transform duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)]"
-              :style="{ transform: `translateX(-${row2Index * 25}%)` }"
+              :style="{ transform: `translateX(-${row2Index * cardWidthPercent}%)` }"
             >
               <div 
                 v-for="(item, index) in signatureHighlights.slice(10, 20)" 
