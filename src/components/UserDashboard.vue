@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AppFooter from './AppFooter.vue'
 
@@ -11,6 +11,19 @@ const searchQuery = ref('')
 const selectedLocation = ref('Kikuyu HQ')
 const locations = ['Kikuyu HQ', 'Westlands Base', 'Muthiga Sector', 'CBD Hub']
 const mobileMenuOpen = ref(false)
+
+const showNotificationsDropdown = ref(false)
+const showCartDropdown = ref(false)
+const notifications = ref([
+    { id: 1, text: "Tactical Sear Protocol updated at Westlands Base.", time: "10m ago", read: false },
+    { id: 2, text: "A5 Wagyu reserves are running low in Kikuyu sector.", time: "1h ago", read: false },
+    { id: 3, text: "Reservation for the Obsidian Room confirmed.", time: "3h ago", read: true }
+])
+
+const closeDropdowns = () => {
+    showNotificationsDropdown.value = false
+    showCartDropdown.value = false
+}
 
 const currentDay = computed(() => {
     return new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(new Date())
@@ -540,6 +553,12 @@ onMounted(() => {
     
     // Rotate Tactical Ads
     setInterval(rotateAds, 5000)
+
+    window.addEventListener('click', closeDropdowns)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('click', closeDropdowns)
 })
 </script>
 
@@ -593,16 +612,78 @@ onMounted(() => {
             <!-- Tactical Actions -->
             <div class="flex items-center gap-3">
                 <!-- Notifications -->
-                <button class="relative w-10 h-10 flex items-center justify-center bg-white/5 border border-white/10 hover:border-primary/50 transition-all group">
-                    <span class="material-icons text-white/50 group-hover:text-primary transition-colors text-xl">notifications</span>
-                    <span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border border-black animate-pulse"></span>
-                </button>
+                <div class="relative">
+                    <button @click.stop="showNotificationsDropdown = !showNotificationsDropdown; showCartDropdown = false"
+                            class="relative w-10 h-10 flex items-center justify-center bg-white/5 border border-white/10 hover:border-primary/50 transition-all group">
+                        <span class="material-icons text-white/50 group-hover:text-primary transition-colors text-xl">notifications</span>
+                        <span v-if="notifications.some(n => !n.read)" class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border border-black animate-pulse"></span>
+                    </button>
+                    <!-- Notifications Dropdown -->
+                    <Transition name="drawer">
+                        <div v-if="showNotificationsDropdown" 
+                             class="absolute right-0 mt-3 w-80 bg-[#080808]/98 backdrop-blur-2xl border border-white/10 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.9)] z-[300] text-left">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+                                <span class="font-display font-black text-xs uppercase tracking-widest text-primary">Tactical Uplinks</span>
+                                <button @click="notifications.forEach(n => n.read = true)" class="text-[8px] font-black uppercase text-gray-500 hover:text-white tracking-widest">Mark All Read</button>
+                            </div>
+                            <div class="space-y-4 max-h-60 overflow-y-auto no-scrollbar">
+                                <div v-for="n in notifications" :key="n.id" 
+                                     class="p-3 border transition-all"
+                                     :class="n.read ? 'border-white/5 bg-white/[0.01]' : 'border-primary/20 bg-primary/5'">
+                                    <p class="text-[10px] text-gray-300 font-medium leading-relaxed">{{ n.text }}</p>
+                                    <span class="text-[8px] text-gray-600 block mt-2 font-black uppercase tracking-wider">{{ n.time }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </Transition>
+                </div>
                 
                 <!-- Cart / Payload -->
-                <button class="relative h-10 px-4 flex items-center gap-3 bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
-                    <span class="material-icons text-white/50 group-hover:text-white transition-colors text-xl">shopping_cart</span>
-                    <span class="font-display font-black text-[10px] uppercase tracking-widest text-primary">03</span>
-                </button>
+                <div class="relative">
+                    <button @click.stop="showCartDropdown = !showCartDropdown; showNotificationsDropdown = false"
+                            class="relative h-10 px-4 flex items-center gap-3 bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
+                        <span class="material-icons text-white/50 group-hover:text-white transition-colors text-xl">shopping_cart</span>
+                        <span class="font-display font-black text-[10px] uppercase tracking-widest text-primary">{{ cartItems.length.toString().padStart(2, '0') }}</span>
+                    </button>
+                    <!-- Cart Dropdown -->
+                    <Transition name="drawer">
+                        <div v-if="showCartDropdown" 
+                             class="absolute right-0 mt-3 w-80 sm:w-96 bg-[#080808]/98 backdrop-blur-2xl border border-white/10 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.9)] z-[300] text-left"
+                             @click.stop>
+                            <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+                                <span class="font-display font-black text-xs uppercase tracking-widest text-primary">Payload Fragments</span>
+                                <span class="text-[8px] font-black uppercase text-gray-500 tracking-widest">{{ cartItems.length }} ITEMS</span>
+                            </div>
+                            <div v-if="cartItems.length === 0" class="py-8 text-center text-gray-600 font-display text-xs uppercase tracking-widest">
+                                No Payload Allocated
+                            </div>
+                            <div v-else class="space-y-4 max-h-60 overflow-y-auto no-scrollbar">
+                                <div v-for="item in cartItems" :key="item.id" 
+                                     class="flex items-center gap-4 p-3 border border-white/5 bg-white/[0.01]">
+                                    <img :src="item.image" class="w-12 h-12 object-cover grayscale" />
+                                    <div class="flex-1 min-w-0">
+                                        <h5 class="text-[10px] font-bold text-white uppercase truncate">{{ item.name }}</h5>
+                                        <span class="text-[9px] text-primary font-bold">KSh {{ item.price.toLocaleString() }} x {{ item.qty }}</span>
+                                    </div>
+                                    <button @click="cartItems = cartItems.filter(i => i.id !== item.id)" class="text-gray-600 hover:text-primary">
+                                        <span class="material-icons text-base">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-if="cartItems.length > 0" class="border-t border-white/10 pt-4 mt-4 space-y-4">
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-gray-500 font-black uppercase tracking-widest">Est. Subtotal</span>
+                                    <span class="text-white font-bold">KSh {{ cartTotal.toLocaleString() }}</span>
+                                </div>
+                                <button @click="activeTab = 'rituals'; showCartDropdown = false" 
+                                        class="w-full py-3 bg-primary text-white font-display text-[9px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center justify-center gap-2">
+                                    <span>Go to Checkout Uplink</span>
+                                    <span class="material-icons text-sm">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                    </Transition>
+                </div>
             </div>
 
             <!-- Sector Indicator -->
@@ -958,10 +1039,9 @@ onMounted(() => {
                             </div>
                         </div>
 
-                        <!-- Tactical Ads -->
+                        <!-- Desktop Tactical Ads -->
                         <div v-for="(ad, i) in intelligenceAds" :key="ad.title" 
-                             class="h-[300px] relative overflow-hidden group cursor-pointer border border-primary/10"
-                             :class="{ 'hidden xl:block': i > 0 }">
+                             class="hidden xl:block h-[300px] relative overflow-hidden group cursor-pointer border border-primary/10">
                             <img :src="ad.image" class="w-full h-full object-cover grayscale brightness-50 group-hover:scale-110 group-hover:grayscale-0 transition-all duration-1000">
                             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
                             <div class="absolute bottom-8 left-8 right-8 text-left">
@@ -971,6 +1051,29 @@ onMounted(() => {
                                 <button class="px-6 py-2 bg-white/10 backdrop-blur-md border border-white/10 text-white font-display text-[9px] font-black uppercase tracking-widest hover:bg-primary hover:border-primary transition-all">
                                     {{ ad.cta }}
                                 </button>
+                            </div>
+                        </div>
+
+                        <!-- Mobile/Tablet Responsive Ads Carousel -->
+                        <div class="xl:hidden relative">
+                            <div 
+                              class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide px-1 carousel-track"
+                              id="mobile-intelligence-ads"
+                            >
+                                <div v-for="ad in intelligenceAds" :key="ad.title"
+                                     data-card
+                                     class="snap-start flex-shrink-0 w-[calc(100vw-48px)] h-[250px] relative overflow-hidden border border-primary/10">
+                                    <img :src="ad.image" class="w-full h-full object-cover grayscale brightness-50">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+                                    <div class="absolute bottom-6 left-6 right-6 text-left">
+                                        <span class="text-primary font-display font-black text-[8px] uppercase tracking-widest mb-1.5 block">EQUIPMENT DROP</span>
+                                        <h4 class="font-display text-xl font-black text-white uppercase mb-2">{{ ad.title }}</h4>
+                                        <p class="text-[9px] text-gray-300 font-light mb-4 opacity-80 line-clamp-2 leading-relaxed">{{ ad.desc }}</p>
+                                        <button class="px-5 py-2 bg-white/10 backdrop-blur-md border border-white/10 text-white font-display text-[9px] font-black uppercase tracking-widest">
+                                            {{ ad.cta }}
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
