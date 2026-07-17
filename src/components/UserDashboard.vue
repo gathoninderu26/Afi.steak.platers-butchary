@@ -621,7 +621,7 @@ onUnmounted(() => {
                     <!-- Notifications Dropdown -->
                     <Transition name="drawer">
                         <div v-if="showNotificationsDropdown" 
-                             class="absolute right-0 mt-3 w-80 bg-[#080808]/98 backdrop-blur-2xl border border-white/10 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.9)] z-[300] text-left">
+                             class="fixed sm:absolute top-auto sm:right-0 left-3 right-3 sm:left-auto sm:w-80 mt-3 bg-[#080808] border border-white/10 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.9)] z-[300] text-left">
                             <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
                                 <span class="font-display font-black text-xs uppercase tracking-widest text-primary">Tactical Uplinks</span>
                                 <button @click="notifications.forEach(n => n.read = true)" class="text-[8px] font-black uppercase text-gray-500 hover:text-white tracking-widest">Mark All Read</button>
@@ -648,7 +648,7 @@ onUnmounted(() => {
                     <!-- Cart Dropdown -->
                     <Transition name="drawer">
                         <div v-if="showCartDropdown" 
-                             class="absolute right-0 mt-3 w-80 sm:w-96 bg-[#080808]/98 backdrop-blur-2xl border border-white/10 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.9)] z-[300] text-left"
+                             class="fixed sm:absolute top-auto sm:right-0 left-3 right-3 sm:left-auto sm:w-96 mt-3 bg-[#080808] border border-white/10 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.9)] z-[300] text-left"
                              @click.stop>
                             <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
                                 <span class="font-display font-black text-xs uppercase tracking-widest text-primary">Payload Fragments</span>
@@ -695,8 +695,8 @@ onUnmounted(() => {
             </div>
 
             <!-- Termination / Logout -->
-            <button @click="handleLogout" class="flex items-center gap-2 group px-6 py-3 bg-white/5 border border-white/10 hover:bg-primary transition-all duration-500">
-                <span class="text-[9px] font-black uppercase tracking-widest group-hover:text-white transition-colors">Abort Ritual</span>
+            <button @click="handleLogout" class="flex items-center gap-2 group px-3 md:px-6 py-3 bg-white/5 border border-white/10 hover:bg-primary transition-all duration-500">
+                <span class="hidden md:inline text-[9px] font-black uppercase tracking-widest group-hover:text-white transition-colors">Abort Ritual</span>
                 <span class="material-icons text-lg group-hover:rotate-180 transition-transform">logout</span>
             </button>
         </div>
