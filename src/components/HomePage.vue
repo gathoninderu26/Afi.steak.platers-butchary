@@ -889,7 +889,7 @@ onUnmounted(() => {
             @touchend="pausedRow1 = false"
           >
             <div 
-              class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar px-6 sm:px-10"
+              class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide px-6 sm:px-10"
               id="highlights-row-1"
             >
               <div 
@@ -966,7 +966,7 @@ onUnmounted(() => {
             @touchend="pausedRow2 = false"
           >
             <div 
-              class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar px-6 sm:px-10"
+              class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide px-6 sm:px-10"
               id="highlights-row-2"
             >
               <div 
