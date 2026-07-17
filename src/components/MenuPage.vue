@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import AppFooter from './AppFooter.vue'
 import { cart, addToCart } from '../cartState'
 
@@ -740,13 +740,29 @@ const animateSystem = () => {
 }
 
 // ─── Scroll Reveal Logic ───────────────────────────────────────────────────
+let observer = null
+
+const observeElements = () => {
+    if (observer) {
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+            observer.observe(el)
+        })
+    }
+}
+
+watch([menuMode, activeCategory, searchQuery], () => {
+    nextTick(() => {
+        observeElements()
+    })
+})
+
 onMounted(() => {
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     }
 
-    const observer = new IntersectionObserver((entries) => {
+    observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('reveal-active')
@@ -754,9 +770,7 @@ onMounted(() => {
         })
     }, observerOptions)
 
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => {
-        observer.observe(el)
-    })
+    observeElements()
 
     // 1. Initialize Ad Protocols
     leftInterval = setInterval(() => {
